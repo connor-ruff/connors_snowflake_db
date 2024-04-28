@@ -30,7 +30,9 @@ $$
         VALUES 
         (${audit_sid}, CURRENT_TIMESTAMP(), FALSE)
     `;
-    snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set = snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set.next();
+
 
     // Count rows in stage
     sql_var = `
@@ -46,7 +48,8 @@ $$
     sql_var = `
         TRUNCATE TABLE ${stg_table_name}
     `;
-    snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set = snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set.next();
 
     // Copy into stage
     sql_var = `
@@ -61,8 +64,10 @@ $$
             FROM @${stg_stage_name}
             (FILE_FORMAT => '${file_format_name}')
         )
+        PURGE=TRUE
     `;
-    snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set = snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set.next();
 
     // Count rows added in stage
     sql_var = `
@@ -106,14 +111,12 @@ $$
             ROWS_ADDED_TO_PROD = ${rows_added_to_prod}
         WHERE AUDIT_SID = ${audit_sid}
     `;
-    snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set = snowflake.createStatement({sqlText: sql_var}).execute();
+    sql_result_set.next();
 
 
-    return audit_sid;
+    return 'SUCCESS';
 
 $$
 ;
-
-
-
 
