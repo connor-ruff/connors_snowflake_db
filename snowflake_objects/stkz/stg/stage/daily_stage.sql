@@ -1,0 +1,4 @@
+CREATE STAGE IF NOT EXISTS STG.DAILY_STAGE
+URL = 's3://connors-big-money-data-bucket/upload/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
