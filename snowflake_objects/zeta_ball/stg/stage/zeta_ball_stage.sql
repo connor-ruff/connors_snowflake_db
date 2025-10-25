@@ -1,0 +1,4 @@
+CREATE STAGE IF NOT EXISTS STG.ZETA_BALL_STAGE
+URL = 's3://connors-misc-blob-for-blobs/zeta_ball/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
