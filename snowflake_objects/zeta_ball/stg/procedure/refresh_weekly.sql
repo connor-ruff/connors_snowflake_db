@@ -8,6 +8,62 @@ BEGIN
 
 BEGIN TRANSACTION;
 
+TRUNCATE TABLE STG.WEEKLY_STATS_TEAMS;
+
+COPY INTO STG.WEEKLY_STATS_TEAMS (
+    TEAM,
+    TEAM_KEY,
+    MANAGER_NICKNAME,
+    MANAGER_EMAIL,
+    ADDS,
+    FULL_TEAM_JSON_OBJ,
+    SOURCE_FILE,
+    LOAD_DT
+)
+FROM (
+    SELECT 
+    $1:fantasy_content:team:name AS TEAM,
+    $1:fantasy_content:team:team_key AS TEAM_KEY,
+    $1:fantasy_content:team:managers:manager:nickname AS MANAGER_NICKNAME,
+    $1:fantasy_content:team:managers:manager:email AS MANAGER_EMAIL,
+
+    $1:fantasy_content:team:roster_adds:value AS ADDS,
+
+    $1:fantasy_content:team AS FULL_TEAM_JSON_OBJ,
+
+    METADATA$FILENAME AS SOURCE_FILE,
+    CURRENT_TIMESTAMP() AS LOAD_DT
+
+FROM @STG.ZETA_BALL_STAGE/
+(FILE_FORMAT => 'STG.JSON_FF',
+ PATTERN => '.*/team_stats/.*\.json$')
+);
+
+TRUNCATE TABLE STG.WEEKLY_STATS_PLAYERS;
+
+INSERT INTO STG.WEEKLY_STATS_PLAYERS (
+    TEAM,
+    TEAM_KEY,
+    PLAYER_KEY,
+    PLAYER_NAME,
+    PLAYER_TEAM,
+    PLAYER_POSITION,
+    PLAYER_STATS,
+    LOAD_DT
+)
+SELECT
+    TEAM,
+    TEAM_KEY,
+    P.VALUE:player_key::VARCHAR AS PLAYER_KEY,
+    P.VALUE:name:full AS PLAYER_NAME,
+    P.VALUE:editorial_team_full_name::VARCHAR AS PLAYER_TEAM,
+    P.VALUE:eligible_positions:position::ARRAY AS PLAYER_POSITION,
+    P.VALUE:player_stats:stats AS PLAYER_STATS,
+    CURRENT_TIMESTAMP() AS LOAD_DT
+FROM STG.WEEKLY_STATS_TEAMS S, 
+LATERAL FLATTEN (input => S.FULL_TEAM_JSON_OBJ:roster:players:player) AS P
+;
+
 
 COMMIT;
     
