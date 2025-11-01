@@ -1,0 +1,26 @@
+CREATE TABLE IF NOT EXISTS DWH.STATS (
+    STAT_ID NUMBER(38,0),
+    STAT_NAME VARCHAR,
+    STAT_SHORT_NAME VARCHAR,
+    LOAD_DT TIMESTAMP_NTZ(9)
+);
+
+TRUNCATE TABLE DWH.STATS;
+
+INSERT INTO DWH.STATS (
+    STAT_ID,
+    STAT_NAME,
+    STAT_SHORT_NAME,
+    LOAD_DT
+)
+VALUES 
+    (12, 'Points', 'PTS', CURRENT_TIMESTAMP()),
+    (15, 'Rebounds', 'REB', CURRENT_TIMESTAMP()),
+    (16, 'Assists', 'AST', CURRENT_TIMESTAMP()),
+    (18, 'Blocks', 'BLK', CURRENT_TIMESTAMP()),
+    (17, 'Steals', 'STL', CURRENT_TIMESTAMP()),
+    (10, 'Three-Pointers Made', '3PM', CURRENT_TIMESTAMP()),
+    (9004003, 'Field Goal Percentage', 'FG%', CURRENT_TIMESTAMP()),
+    (9007006, 'Free Throw Percentage', 'FT%', CURRENT_TIMESTAMP()),
+    (19, 'Turnovers', 'TO', CURRENT_TIMESTAMP())
+;
