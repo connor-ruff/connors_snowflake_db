@@ -4,8 +4,9 @@ LANGUAGE JAVASCRIPT
 AS
 $$
 try {
-   
-    var WEEK_NUMBER = WEEK_NUMBER_INPUT;
+
+    // round to int
+    var WEEK_NUMBER = Math.round(WEEK_NUMBER_INPUT);
     var sql_command;
     var stmt;
     
@@ -50,7 +51,7 @@ try {
 
             FROM @STG.ZETA_BALL_STAGE/
             (FILE_FORMAT => 'STG.JSON_FF',
-            PATTERN => '.*/team_stats/.*\.json$')
+            PATTERN => '.*week_${WEEK_NUMBER}/team_stats/.*\.json$')
         );
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
@@ -245,10 +246,87 @@ try {
             SUM(TOS) AS TOTAL_TOS,
             CURRENT_TIMESTAMP() AS LOAD_DT
         FROM DWH.WEEKLY_STATS
+        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
         GROUP BY 
             WEEK_NUMBER,
             TEAM_KEY, 
             TEAM
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+
+    sql_command = `
+        INSERT INTO DWH.MATCHUPS_CROSSJOIN
+        (
+            WEEK_NUMBER,
+            MATCHUP_ID,
+            TEAM_1,
+            TEAM_1_KEY,
+            TEAM_2,
+            TEAM_2_KEY,
+            CATEGORIES_WON_BY_TEAM_1,
+            CATEGORIES_WON_BY_TEAM_2,
+            TEAM_1_RESULT,
+            LOAD_DT
+        )
+        SELECT 
+            P1.WEEK_NUMBER,
+            CONCAT(P1.WEEK_NUMBER::VARCHAR, '^', LEAST(P1.TEAM_KEY, P2.TEAM_KEY), '--', GREATEST(P1.TEAM_KEY, P2.TEAM_KEY) ) AS MATCHUP_ID,
+            P1.TEAM AS TEAM_1, 
+            P1.TEAM_KEY AS TEAM_1_KEY,
+            P2.TEAM AS TEAM_2,
+            P2.TEAM_KEY AS TEAM_2_KEY,
+        
+            CASE WHEN P1.TOTAL_PTS > P2.TOTAL_PTS THEN 1 ELSE 0 END 
+            + 
+            CASE WHEN P1.TOTAL_REB > P2.TOTAL_REB THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.TOTAL_AST > P2.TOTAL_AST THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.TOTAL_STL > P2.TOTAL_STL THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.TOTAL_BLK > P2.TOTAL_BLK THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.TOTAL_THREE_PM > P2.TOTAL_THREE_PM THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.FG_PCT > P2.FG_PCT THEN 1 ELSE 0 END
+            +
+            CASE WHEN P1.FT_PCT > P2.FT_PCT THEN 1 ELSE 0 END
+            + 
+            CASE WHEN P1.TOTAL_TOS < P2.TOTAL_TOS THEN 1 ELSE 0 END   
+            AS CATEGORIES_WON_BY_TEAM_1,
+
+            CASE WHEN P2.TOTAL_PTS > P1.TOTAL_PTS THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_REB > P1.TOTAL_REB THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_AST > P1.TOTAL_AST THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_STL > P1.TOTAL_STL THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_BLK > P1.TOTAL_BLK THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_THREE_PM > P1.TOTAL_THREE_PM THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.FG_PCT > P1.FG_PCT THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.FT_PCT > P1.FT_PCT THEN 1 ELSE 0 END
+            +
+            CASE WHEN P2.TOTAL_TOS < P1.TOTAL_TOS THEN 1 ELSE 0 END
+            AS CATEGORIES_WON_BY_TEAM_2,
+
+            CASE WHEN CATEGORIES_WON_BY_TEAM_1 > CATEGORIES_WON_BY_TEAM_2 THEN 'W'
+                    WHEN CATEGORIES_WON_BY_TEAM_1 < CATEGORIES_WON_BY_TEAM_2 THEN 'L'
+                    ELSE 'T' END AS TEAM_1_RESULT,
+
+            CURRENT_TIMESTAMP() AS LOAD_DT
+        FROM DWH.WEEKLY_TEAM_TOTALS P1 
+        INNER JOIN DWH.WEEKLY_TEAM_TOTALS P2
+            ON P1.WEEK_NUMBER = P2.WEEK_NUMBER
+        WHERE 
+            P1.TEAM_KEY <> P2.TEAM_KEY
+            AND P1.WEEK_NUMBER = ${WEEK_NUMBER}
+        ORDER BY WEEK_NUMBER, TEAM_1, TEAM_2
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
