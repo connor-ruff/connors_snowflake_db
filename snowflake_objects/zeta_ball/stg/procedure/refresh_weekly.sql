@@ -130,6 +130,14 @@ try {
     stmt.execute();
 
     sql_command = `
+        DELETE FROM DWH.WEEKLY_STATS
+        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
+        ;
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+
+    sql_command = `
         INSERT INTO DWH.WEEKLY_STATS (
             WEEK_NUMBER,
             TEAM_KEY,
@@ -207,6 +215,14 @@ try {
     stmt.execute();
 
     sql_command = `
+        DELETE FROM DWH.WEEKLY_TEAM_TOTALS
+        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
+        ;
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+
+    sql_command = `
         INSERT INTO DWH.WEEKLY_TEAM_TOTALS
         (
             WEEK_NUMBER,
@@ -251,6 +267,15 @@ try {
             WEEK_NUMBER,
             TEAM_KEY, 
             TEAM
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+
+
+    sql_command = `
+        DELETE FROM DWH.MATCHUPS_CROSSJOIN
+        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
+        ;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
