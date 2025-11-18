@@ -17,198 +17,148 @@ try {
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.WEEKLY_STATS_TEAMS;
+        TRUNCATE TABLE STG.WEEKLY_TEAM_MATCHUPS_LVL1;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        COPY INTO STG.WEEKLY_STATS_TEAMS (
+        COPY INTO STG.WEEKLY_TEAM_MATCHUPS_LVL1 (
             WEEK_NUMBER,
-            TEAM,
-            TEAM_KEY,
-            MANAGER_NICKNAME,
-            MANAGER_EMAIL,
-            ADDS,
-            FULL_TEAM_JSON_OBJ,
-            SOURCE_FILE,
+            TEAM_KEY, 
+            TEAM_NAME,
+            FULL_OBJECT,
+            MATCHUPS_ARRAY,
+            SOURCE_FILE_NAME,
             LOAD_DT
         )
         FROM (
             SELECT 
                 ROUND(${WEEK_NUMBER}, 0) AS WEEK_NUMBER,
-                $1:fantasy_content:team:name AS TEAM,
+                
                 $1:fantasy_content:team:team_key AS TEAM_KEY,
-                $1:fantasy_content:team:managers:manager:nickname AS MANAGER_NICKNAME,
-                $1:fantasy_content:team:managers:manager:email AS MANAGER_EMAIL,
+                $1:fantasy_content:team:name AS TEAM_NAME,
 
-                $1:fantasy_content:team:roster_adds:value AS ADDS,
+                $1 AS FULL_OBJECT,
+                $1:fantasy_content:team:matchups:matchup AS MATCHUPS_ARRAY,
 
-                $1:fantasy_content:team AS FULL_TEAM_JSON_OBJ,
-
-                METADATA$FILENAME AS SOURCE_FILE,
+                METADATA$FILENAME AS SOURCE_FILE_NAME,
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
             FROM @STG.ZETA_BALL_STAGE/
             (FILE_FORMAT => 'STG.JSON_FF',
-            PATTERN => '.*week_${WEEK_NUMBER}/team_stats/.*\.json$')
+            PATTERN => '.*week_${WEEK_NUMBER}/team_matchups/.*\.json$')
         );
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
+
+
     sql_command = `
-        TRUNCATE TABLE STG.WEEKLY_STATS_PLAYERS;
+        TRUNCATE TABLE STG.WEEKLY_TEAM_MATCHUPS_LVL2;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        INSERT INTO STG.WEEKLY_STATS_PLAYERS (
+        INSERT INTO STG.WEEKLY_TEAM_MATCHUPS_LVL2 (
             WEEK_NUMBER,
-            TEAM,
             TEAM_KEY,
-            PLAYER_KEY,
-            PLAYER_NAME,
-            PLAYER_TEAM,
-            PLAYER_POSITION,
-            PLAYER_STATS,
+            TEAM_NAME,
+            FULL_MATCHUP_OBJECT,
+            WEEK_START_DATE,
+            WEEK_END_DATE,
+            SOURCE_FILE_NAME,
             LOAD_DT
         )
         SELECT
-            WEEK_NUMBER,
-            TEAM,
-            TEAM_KEY,
-            P.VALUE:player_key::VARCHAR AS PLAYER_KEY,
-            P.VALUE:name:full AS PLAYER_NAME,
-            P.VALUE:editorial_team_full_name::VARCHAR AS PLAYER_TEAM,
-            P.VALUE:eligible_positions:position::ARRAY AS PLAYER_POSITION,
-            P.VALUE:player_stats:stats AS PLAYER_STATS,
-            CURRENT_TIMESTAMP() AS LOAD_DT
-        FROM STG.WEEKLY_STATS_TEAMS S, 
-        LATERAL FLATTEN (input => S.FULL_TEAM_JSON_OBJ:roster:players:player) AS P
+            S.WEEK_NUMBER,
+            S.TEAM_KEY,
+            S.TEAM_NAME,
+
+            P.VALUE AS FULL_MATCHUP_OBJECT,
+            P.VALUE:week_start::DATE AS WEEK_START_DATE,
+            P.VALUE:week_end::DATE AS WEEK_END_DATE,
+
+            S.SOURCE_FILE_NAME,
+            S.LOAD_DT AS LOAD_DT
+        FROM STG.WEEKLY_TEAM_MATCHUPS_LVL1 S, 
+        LATERAL FLATTEN (input => S.MATCHUPS_ARRAY) AS P
+        WHERE S.WEEK_NUMBER = P.VALUE:week::INT
         ;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.WEEKLY_STATS_PLAYER_STATS;
+        TRUNCATE TABLE STG.WEEKLY_TEAM_MATCHUPS_LVL3;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        INSERT INTO STG.WEEKLY_STATS_PLAYER_STATS (
+        INSERT INTO STG.WEEKLY_TEAM_MATCHUPS_LVL3 (
             WEEK_NUMBER,
-            TEAM,
             TEAM_KEY,
-            PLAYER_KEY,
-            PLAYER_NAME,
-            PLAYER_TEAM,
-            PLAYER_POSITION,
-            STAT_ID,
-            STAT_VALUE,
+            TEAM_NAME,
+            WEEK_START_DATE,
+            WEEK_END_DATE,
+            MATCHUP_OBJECT,
+            SOURCE_FILE_NAME,
             LOAD_DT
         )
         SELECT 
             S.WEEK_NUMBER,
-            TEAM, 
-            TEAM_KEY,
-            PLAYER_KEY,
-            PLAYER_NAME,
-            PLAYER_TEAM,
-            PLAYER_POSITION,
-            P.VALUE:stat_id::INT AS STAT_ID,
-            REPLACE(P.VALUE:value::VARCHAR, '-', '0') AS STAT_VALUE,
-            CURRENT_TIMESTAMP() AS LOAD_DT
-        FROM STG.WEEKLY_STATS_PLAYERS S,
-        LATERAL FLATTEN(INPUT => S.PLAYER_STATS:stat) P
+            S.TEAM_KEY,
+            S.TEAM_NAME,
+            S.WEEK_START_DATE,
+            S.WEEK_END_DATE,
+
+            P.VALUE AS MATCHUP_OBJECT,
+
+            S.SOURCE_FILE_NAME,
+            S.LOAD_DT
+        FROM STG.WEEKLY_TEAM_MATCHUPS_LVL2 S,
+        LATERAL FLATTEN(INPUT => S.FULL_MATCHUP_OBJECT:teams:team) P
+        WHERE TRIM(P.VALUE:team_key::VARCHAR) = TRIM(S.TEAM_KEY)
         ;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        DELETE FROM DWH.WEEKLY_STATS
-        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
-        ;
+        TRUNCATE TABLE STG.WEEKLY_TEAM_MATCHUP_STATS;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        INSERT INTO DWH.WEEKLY_STATS (
+        INSERT INTO STG.WEEKLY_TEAM_MATCHUP_STATS (
             WEEK_NUMBER,
             TEAM_KEY,
-            TEAM,
-            PLAYER_KEY,
-            PLAYER_NAME,
-            PLAYER_TEAM,
-            POSITIONS_STARTED,
-            
-            PTS,
-            REB,
-            AST,
-            BLK,
-            STL,
-            THREE_PM,
-            FGM,
-            FGA,
-            FTM,
-            FTA,
-            TOS,
-
+            TEAM_NAME,
+            WEEK_START_DATE,
+            WEEK_END_DATE,
+            STAT_ID,
+            STAT_VALUE,
+            SOURCE_FILE_NAME,
             LOAD_DT
         )
-        SELECT
+        SELECT 
             S.WEEK_NUMBER,
             S.TEAM_KEY,
-            S.TEAM,
-            S.PLAYER_KEY,
-            S.PLAYER_NAME,
-            S.PLAYER_TEAM,
-            S.PLAYER_POSITION,
-            MAX(CASE WHEN S.STAT_ID = 12 THEN S.STAT_VALUE ELSE NULL END)::INT AS PTS,
-            MAX(CASE WHEN S.STAT_ID = 15 THEN S.STAT_VALUE ELSE NULL END)::INT AS REB,
-            MAX(CASE WHEN S.STAT_ID = 16 THEN S.STAT_VALUE ELSE NULL END)::INT AS AST,
-            MAX(CASE WHEN S.STAT_ID = 18 THEN S.STAT_VALUE ELSE NULL END)::INT AS BLK,
-            MAX(CASE WHEN S.STAT_ID = 17 THEN S.STAT_VALUE ELSE NULL END)::INT AS STL,
-            MAX(CASE WHEN S.STAT_ID = 10 THEN S.STAT_VALUE ELSE NULL END)::INT AS THREE_PM,
+            S.TEAM_NAME,
+            S.WEEK_START_DATE,
+            S.WEEK_END_DATE,
 
-            SPLIT(
-                MAX(CASE WHEN S.STAT_ID = 9004003 THEN S.STAT_VALUE ELSE NULL END),
-                '/'
-            )[0]::INT AS FGM,
+            P.VALUE:stat_id::INT AS STAT_ID,
+            P.VALUE:value::VARCHAR AS STAT_VALUE,
 
-            SPLIT(
-                MAX(CASE WHEN S.STAT_ID = 9004003 THEN S.STAT_VALUE ELSE NULL END),
-                '/'
-            )[1]::INT AS FGA,
-
-
-            SPLIT(
-                MAX(CASE WHEN S.STAT_ID = 9007006 THEN S.STAT_VALUE ELSE NULL END),
-                '/'
-            )[0]::INT AS FTM,
-
-                SPLIT(
-                MAX(CASE WHEN S.STAT_ID = 9007006 THEN S.STAT_VALUE  ELSE NULL END),
-                '/'
-            )[1]::INT AS FTA,
-
-            MAX(CASE WHEN S.STAT_ID = 19 THEN S.STAT_VALUE ELSE NULL END)::INT AS TOS,
-
-            CURRENT_TIMESTAMP() AS LOAD_DT
-        FROM STG.WEEKLY_STATS_PLAYER_STATS S
-        GROUP BY 
-            S.WEEK_NUMBER,
-            S.TEAM_KEY,
-            S.TEAM,
-            S.PLAYER_KEY,
-            S.PLAYER_NAME,
-            S.PLAYER_TEAM,
-            S.PLAYER_POSITION
+            S.SOURCE_FILE_NAME,
+            S.LOAD_DT
+        FROM STG.WEEKLY_TEAM_MATCHUPS_LVL3 S,
+        LATERAL FLATTEN (INPUT => S.MATCHUP_OBJECT:team_stats:stats:stat) P
         ;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
@@ -244,29 +194,69 @@ try {
             LOAD_DT
         )
         SELECT 
-            WEEK_NUMBER,
-            TEAM_KEY, 
-            TEAM,
-            SUM(PTS) AS TOTAL_PTS,
-            SUM(REB) AS TOTAL_REB,
-            SUM(AST) AS TOTAL_AST,
-            SUM(BLK) AS TOTAL_BLK,
-            SUM(STL) AS TOTAL_STL,
-            SUM(THREE_PM) AS TOTAL_THREE_PM,
-            SUM(FGM) AS TOTAL_FGM,
-            SUM(FGA) AS TOTAL_FGA,
-            ROUND(TOTAL_FGM / NULLIF(TOTAL_FGA, 0), 6) AS FG_PCT,
-            SUM(FTM) AS TOTAL_FTM,
-            SUM(FTA) AS TOTAL_FTA,
-            ROUND(TOTAL_FTM / NULLIF(TOTAL_FTA, 0), 6) AS FT_PCT,
-            SUM(TOS) AS TOTAL_TOS,
+            WEEK_NUMBER, TEAM_KEY, TEAM_NAME AS TEAM,
+
+            LISTAGG(
+                CASE WHEN STAT_ID = 12 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_PTS,
+            LISTAGG(
+                CASE WHEN STAT_ID = 15 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_REB,
+            LISTAGG(
+                CASE WHEN STAT_ID = 16 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_AST,
+            LISTAGG(
+                CASE WHEN STAT_ID = 18 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_BLK,
+            LISTAGG(
+                CASE WHEN STAT_ID = 17 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_STL,
+            LISTAGG(
+                CASE WHEN STAT_ID = 10 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_THREE_PM,
+
+            SPLIT(
+                LISTAGG(
+                CASE WHEN STAT_ID = 9004003 THEN STAT_VALUE ELSE '' END
+                )::VARCHAR,
+                '/')[0]::NUMBER(38,0)
+            AS TOTAL_FGM,
+
+            SPLIT(
+                LISTAGG(
+                CASE WHEN STAT_ID = 9004003 THEN STAT_VALUE ELSE '' END
+                )::VARCHAR,
+                '/')[1]::NUMBER(38,0)
+            AS TOTAL_FGA,
+
+            ROUND(TOTAL_FGM::FLOAT / NULLIF(TOTAL_FGA::FLOAT, 0), 6) AS FG_PCT,
+
+            SPLIT(
+                LISTAGG(
+                CASE WHEN STAT_ID = 9007006 THEN STAT_VALUE ELSE '' END
+                )::VARCHAR,
+                '/')[0]::NUMBER(38,0)
+            AS TOTAL_FTM,
+
+            SPLIT(
+                LISTAGG(
+                CASE WHEN STAT_ID = 9007006 THEN STAT_VALUE ELSE '' END
+                )::VARCHAR,
+                '/')[1]::NUMBER(38,0)
+                AS TOTAL_FTA,
+
+                ROUND(TOTAL_FTM::FLOAT / NULLIF(TOTAL_FTA::FLOAT, 0), 6) AS FT_PCT,
+
+            LISTAGG(
+                CASE WHEN STAT_ID = 19 THEN STAT_VALUE ELSE '' END
+            )::NUMBER(38,0) AS TOTAL_TOS,
+
             CURRENT_TIMESTAMP() AS LOAD_DT
-        FROM DWH.WEEKLY_STATS
-        WHERE WEEK_NUMBER = ${WEEK_NUMBER}
+
+        FROM STG.WEEKLY_TEAM_MATCHUP_STATS
         GROUP BY 
-            WEEK_NUMBER,
-            TEAM_KEY, 
-            TEAM
+            WEEK_NUMBER, TEAM_KEY, TEAM_NAME
+        ;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
