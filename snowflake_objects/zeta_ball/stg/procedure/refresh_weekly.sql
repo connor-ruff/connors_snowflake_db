@@ -1,12 +1,61 @@
-CREATE OR REPLACE PROCEDURE STG.REFRESH_WEEKLY(WEEK_NUMBER_INPUT FLOAT)
+CREATE OR REPLACE PROCEDURE STG.REFRESH_WEEKLY()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
 $$
 try {
 
+    // Get current week number
+    sql_command = `
+        SELECT 
+        DATEDIFF('WEEK', TO_DATE('2025-10-20'), CURRENT_DATE()) AS WEEK_DIFF
+    ;`;
+    var stmt = snowflake.createStatement({sqlText: sql_command});
+    var result_set = stmt.execute();
+    result_set.next();
+    var WEEK_NUMBER = result_set.getColumnValue('WEEK_DIFF');
+
+    // Call external function
+    var team_key_list = [
+        "466.l.6036.t.8",
+        "466.l.6036.t.7",
+        "466.l.6036.t.14",
+        "466.l.6036.t.2",
+        "466.l.6036.t.5",
+        "466.l.6036.t.6",
+        "466.l.6036.t.11",
+        "466.l.6036.t.13",
+        "466.l.6036.t.12",
+        "466.l.6036.t.1",
+        "466.l.6036.t.10",
+        "466.l.6036.t.4",
+        "466.l.6036.t.15",
+        "466.l.6036.t.9",
+        "466.l.6036.t.18",
+        "466.l.6036.t.16",
+        "466.l.6036.t.3",
+        "466.l.6036.t.17",
+    ];
+
+    for (var i = 0; i < team_key_list.length; i++) {
+        var team_key = team_key_list[i];
+
+        var lambda_sql = `
+            SELECT STG.ZETA_BALL_REFRESH_LAMBDA_TRIGGER('${team_key}', ${WEEK_NUMBER})
+            AS RESPONSE;
+        `;
+        var lambda_stmt = snowflake.createStatement({sqlText: lambda_sql});
+        var lambda_result_set = lambda_stmt.execute();
+        // Optionally process the result if needed
+        lambda_result_set.next();
+        var response = lambda_result_set.getColumnValue('RESPONSE');
+
+        if (response !== 'SUCCESS') {
+            throw new Error('Lambda function failed for team_key: ' + team_key + ' with response: ' + response);
+        }
+    }
+
     // round to int
-    var WEEK_NUMBER = Math.round(WEEK_NUMBER_INPUT);
     var sql_command;
     var stmt;
     
