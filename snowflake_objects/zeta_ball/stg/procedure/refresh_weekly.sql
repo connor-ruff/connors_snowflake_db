@@ -5,6 +5,23 @@ AS
 $$
 try {
 
+    sql_command = `
+        INSERT INTO STG.AUDIT (RESULT_MSG)
+        VALUES ('STARTING WEEKLY REFRESH PROCESS');
+    `;
+    var stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+
+    sql_command = `
+        SELECT AUDIT_SID FROM STG.AUDIT
+        ORDER BY START_DT DESC 
+        LIMIT 1;
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    var result_set = stmt.execute();
+    result_set.next();
+    var audit_sid = result_set.getColumnValue('AUDIT_SID');
+
     // Get current week number
     sql_command = `
         SELECT 
@@ -401,6 +418,18 @@ try {
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
+
+    sql_command = `
+        UPDATE STG.AUDIT
+        SET 
+            SUCCESS_FLG = TRUE,
+            RESULT_MSG = 'WEEKLY REFRESH PROCESS COMPLETED SUCCESSFULLY',
+            END_DT = CURRENT_TIMESTAMP()
+        WHERE AUDIT_SID = ${audit_sid};
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    stmt.execute();
+    
     
     // Return success message or result
     return "SUCCESS";
@@ -411,6 +440,17 @@ try {
     `;
     var error_stmt = snowflake.createStatement({sqlText: sql_error_command});
     error_stmt.execute();
+
+    var log_error_command = `
+        UPDATE STG.AUDIT
+        SET 
+            SUCCESS_FLG = FALSE,
+            RESULT_MSG = 'FAILED: ' || '${err.message}',
+            END_DT = CURRENT_TIMESTAMP()
+        WHERE AUDIT_SID = ${audit_sid};
+    `;
+    var log_error_stmt = snowflake.createStatement({sqlText: log_error_command});
+    log_error_stmt.execute();
     // Catch and return error message
     return "Error: " + err.message;
 }
