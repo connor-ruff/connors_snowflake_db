@@ -429,7 +429,18 @@ try {
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
-    
+
+    var sql_command = `
+         CALL SYSTEM$SEND_EMAIL(
+                'BASIC_EMAIL_INTEGRATION',
+                'connorruff99@gmail.com',
+                'SUCCESS: Zeta Ball Automation',
+                'The weekly refresh process has completed successfully.'
+        );
+    `;
+    var email_stmt = snowflake.createStatement({sqlText: sql_command});
+    email_stmt.execute();
+
     
     // Return success message or result
     return "SUCCESS";
@@ -451,6 +462,18 @@ try {
     `;
     var log_error_stmt = snowflake.createStatement({sqlText: log_error_command});
     log_error_stmt.execute();
+
+    var sql_command = `
+         CALL SYSTEM$SEND_EMAIL(
+                'BASIC_EMAIL_INTEGRATION',
+                'connorruff99@gmail.com',
+                'FAILURE: Zeta Ball Automation',
+                'The weekly refresh process has failed.'
+        );
+    `;
+    var email_stmt = snowflake.createStatement({sqlText: sql_command});
+    email_stmt.execute();
+
     // Catch and return error message
     return "Error: " + err.message;
 }
