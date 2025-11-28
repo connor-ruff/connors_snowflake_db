@@ -1,0 +1,4 @@
+CREATE STAGE IF NOT EXISTS STG.BIRD_STAGE
+URL = 's3://connors-misc-blob-for-blobs/ebird/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;

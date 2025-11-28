@@ -6,3 +6,6 @@ STORAGE_AWS_ROLE_ARN = 'arn:aws:iam::676058464455:role/s3-read-access-for-aws-ac
 STORAGE_ALLOWED_LOCATIONS = ('s3://connors-big-money-data-bucket', 
                         's3://connors-misc-blob-for-blobs')
 ;
+
+USE ROLE ACCOUNTADMIN;
+GRANT USAGE ON INTEGRATION S3_FULL_INT TO ROLE CONNOR_ADMIN;
