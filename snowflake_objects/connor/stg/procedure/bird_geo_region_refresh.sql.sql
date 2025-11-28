@@ -18,19 +18,19 @@ try {
     /////////////////////////////////////////////////
 
     sql_command = `
-        SELECT STG.BIRD_GEO_REGION_REFRESH('country', 'world');
+        SELECT STG.BIRD_GENERAL_REFRESHER('REFRESH_GEO_REGIONS', 'country', 'world', NULL);
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result = stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.BIRD_GEO_REGIONS;
+        TRUNCATE TABLE STG.BIRD_SIMPLE_VARIANT_STAGE;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result = stmt.execute();
 
     sql_command = `
-        COPY INTO STG.BIRD_GEO_REGIONS (MAIN_OBJ)
+        COPY INTO STG.BIRD_SIMPLE_VARIANT_STAGE (MAIN_OBJ)
         FROM 
         (
             SELECT $1::VARIANT 
@@ -55,7 +55,7 @@ try {
             'COUNTRY' AS GEO_TYPE,
             F.VALUE:code::STRING AS REGION_CODE,
             F.VALUE:name::STRING AS REGION_NAME
-        FROM STG.BIRD_GEO_REGIONS M, 
+        FROM STG.BIRD_SIMPLE_VARIANT_STAGE M, 
         LATERAL FLATTEN(INPUT => MAIN_OBJ) AS F
         ;
     `;
@@ -67,19 +67,19 @@ try {
     // REFRESH US STATES
     /////////////////////////////////////////////////
     sql_command = `
-        SELECT STG.BIRD_GEO_REGION_REFRESH('subnational1', 'US');
+        SELECT STG.BIRD_GENERAL_REFRESHER('REFRESH_GEO_REGIONS', 'subnational1', 'US', NULL);
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result = stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.BIRD_GEO_REGIONS;
+        TRUNCATE TABLE STG.BIRD_SIMPLE_VARIANT_STAGE;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result = stmt.execute();
 
     sql_command = `
-        COPY INTO STG.BIRD_GEO_REGIONS (MAIN_OBJ)
+        COPY INTO STG.BIRD_SIMPLE_VARIANT_STAGE (MAIN_OBJ)
         FROM 
         (
             SELECT $1::VARIANT 
@@ -104,7 +104,7 @@ try {
             'SUBNATIONAL1' AS GEO_TYPE,
             F.VALUE:code::STRING AS REGION_CODE,
             F.VALUE:name::STRING AS REGION_NAME
-        FROM STG.BIRD_GEO_REGIONS M, 
+        FROM STG.BIRD_SIMPLE_VARIANT_STAGE M, 
         LATERAL FLATTEN(INPUT => MAIN_OBJ) AS F
         ;
     `;
@@ -120,20 +120,20 @@ try {
         state = STATES_OF_INTEREST[i];
         
         sql_command = `
-            SELECT STG.BIRD_GEO_REGION_REFRESH('subnational2', 'US-${state}');
+            SELECT STG.BIRD_GENERAL_REFRESHER('REFRESH_GEO_REGIONS', 'subnational2', 'US-${state}', NULL);
         `;
         stmt = snowflake.createStatement({sqlText: sql_command});
         result = stmt.execute();
     }
 
     sql_command = `
-        TRUNCATE TABLE STG.BIRD_GEO_REGIONS;
+        TRUNCATE TABLE STG.BIRD_SIMPLE_VARIANT_STAGE;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result = stmt.execute();
 
     sql_command = `
-        COPY INTO STG.BIRD_GEO_REGIONS (MAIN_OBJ)
+        COPY INTO STG.BIRD_SIMPLE_VARIANT_STAGE (MAIN_OBJ)
         FROM 
         (
             SELECT $1::VARIANT 
@@ -159,7 +159,7 @@ try {
             'SUBNATIONAL2' AS GEO_TYPE,
             F.VALUE:code::STRING AS REGION_CODE,
             F.VALUE:name::STRING AS REGION_NAME
-        FROM STG.BIRD_GEO_REGIONS M, 
+        FROM STG.BIRD_SIMPLE_VARIANT_STAGE M, 
         LATERAL FLATTEN(INPUT => MAIN_OBJ) AS F
         ;
     `;
