@@ -29,7 +29,7 @@ BEGIN
            LISTAGG(
                CASE
                    WHEN TARGET_DATA_TYPE = 'DATE'        THEN 'TRY_TO_DATE(' || RAW_COLUMN_NAME || ', ''YYYY-MM-DD'')'
-                   WHEN TARGET_DATA_TYPE LIKE 'NUMBER%'  THEN 'TRY_TO_NUMBER(' || RAW_COLUMN_NAME || ')'
+                   WHEN TARGET_DATA_TYPE LIKE 'NUMBER%'  THEN 'TRY_TO_NUMBER(' || RAW_COLUMN_NAME || ', ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 1) || ', ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 2) || ')'
                    ELSE RAW_COLUMN_NAME
                END, ', '
            )                                    WITHIN GROUP (ORDER BY RAW_COLUMN_NUMBER)
