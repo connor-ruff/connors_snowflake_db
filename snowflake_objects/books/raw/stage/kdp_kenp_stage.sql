@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.KDP_KENP_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/csv_stage/kenp/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.KDP_KENP_STAGE;

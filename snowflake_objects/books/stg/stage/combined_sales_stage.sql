@@ -1,5 +1,0 @@
-CREATE STAGE IF NOT EXISTS BOOKS.STG.COMBINED_SALES_STAGE
-URL = 's3://connors-misc-blob-for-blobs/books/upload/'
-STORAGE_INTEGRATION = S3_FULL_INT
-;
-

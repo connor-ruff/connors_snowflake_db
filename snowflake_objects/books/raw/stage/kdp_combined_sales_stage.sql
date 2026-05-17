@@ -1,0 +1,7 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.KDP_COMBINED_SALES_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/csv_stage/combined_sales/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.KDP_COMBINED_SALES_STAGE;
+

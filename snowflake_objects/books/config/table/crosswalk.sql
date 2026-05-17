@@ -1,0 +1,43 @@
+CREATE TABLE IF NOT EXISTS BOOKS.CONFIG.CROSSWALK (
+    RAW_TABLE_NAME VARCHAR,
+    RAW_COLUMN_NUMBER INT,
+    RAW_COLUMN_NAME VARCHAR,
+    TARGET_TABLE_NAME VARCHAR,
+    TARGET_COLUMN_NAME VARCHAR,
+    TARGET_DATA_TYPE VARCHAR
+);
+
+
+TRUNCATE TABLE BOOKS.CONFIG.CROSSWALK;
+
+INSERT INTO BOOKS.CONFIG.CROSSWALK
+(RAW_TABLE_NAME, RAW_COLUMN_NUMBER, RAW_COLUMN_NAME,
+TARGET_TABLE_NAME, TARGET_COLUMN_NAME, TARGET_DATA_TYPE)
+VALUES
+
+-- KDP_COMBINED_SALES
+('RAW.KDP_COMBINED_SALES_STAGE', 1,  '"Royalty Date"',                     'KDP.COMBINED_SALES', 'ROYALTY_DATE',             'DATE'),
+('RAW.KDP_COMBINED_SALES_STAGE', 2,  '"Title"',                            'KDP.COMBINED_SALES', 'TITLE',                    'VARCHAR(250)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 3,  '"Author Name"',                      'KDP.COMBINED_SALES', 'AUTHOR_NAME',              'VARCHAR(250)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 4,  '"ASIN/ISBN"',                        'KDP.COMBINED_SALES', 'ASIN_ISBN',                'VARCHAR(25)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 5,  '"Marketplace"',                      'KDP.COMBINED_SALES', 'MARKETPLACE',              'VARCHAR(250)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 6,  '"Royalty Type"',                     'KDP.COMBINED_SALES', 'ROYALTY_TYPE',             'VARCHAR(250)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 7,  '"Transaction Type"',                 'KDP.COMBINED_SALES', 'TRANSACTION_TYPE',         'VARCHAR(250)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 8,  '"Units Sold"',                       'KDP.COMBINED_SALES', 'UNITS_SOLD',               'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 9,  '"Units Refunded"',                   'KDP.COMBINED_SALES', 'UNITS_REFUNDED',           'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 10, '"Net Units Sold"',                   'KDP.COMBINED_SALES', 'NET_UNITS_SOLD',           'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 11, '"Avg. List Price without tax"',      'KDP.COMBINED_SALES', 'AVG_LIST_PRICE_WOUT_TAX',  'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 12, '"Avg. Offer Price without tax"',     'KDP.COMBINED_SALES', 'AVG_OFFER_PRICE_WOUT_TAX', 'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 13, '"Avg. Delivery/Manufacturing cost"', 'KDP.COMBINED_SALES', 'AVG_DELIV_MANUFACT_COST',  'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 14, '"Royalty"',                          'KDP.COMBINED_SALES', 'ROYALTY',                  'NUMBER(38,2)'),
+('RAW.KDP_COMBINED_SALES_STAGE', 15, '"Currency"',                         'KDP.COMBINED_SALES', 'CURRENCY',                 'VARCHAR(25)'),
+
+-- KDP_KENP_STAGE
+('RAW.KDP_KENP_STAGE', 1, '"Date"',           'KDP.KENP', 'KENP_DATE',      'DATE'),
+('RAW.KDP_KENP_STAGE', 2, '"Title"',          'KDP.KENP', 'TITLE',          'VARCHAR(250)'),
+('RAW.KDP_KENP_STAGE', 3, '"Author Name"',    'KDP.KENP', 'AUTHOR_NAME',    'VARCHAR(250)'),
+('RAW.KDP_KENP_STAGE', 4, '"eBook ASIN"',     'KDP.KENP', 'EBOOK_ASIN',     'VARCHAR(25)'),
+('RAW.KDP_KENP_STAGE', 5, '"Audiobook ASIN"', 'KDP.KENP', 'AUDIOBOOK_ASIN', 'VARCHAR(25)'),
+('RAW.KDP_KENP_STAGE', 6, '"Audible ASIN"',   'KDP.KENP', 'AUDIBLE_ASIN',   'VARCHAR(25)'),
+('RAW.KDP_KENP_STAGE', 7, '"Marketplace"',    'KDP.KENP', 'MARKETPLACE',    'VARCHAR(250)'),
+('RAW.KDP_KENP_STAGE', 8, '"KENP"',           'KDP.KENP', 'KENP',           'NUMBER(38,0)');
