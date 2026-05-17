@@ -1,3 +1,5 @@
 .vscode/
 
 TMP/
+
+.DS_Store
