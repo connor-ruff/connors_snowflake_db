@@ -27,3 +27,6 @@ SHOW GRANTS TO ROLE PROG_USER_ROLE;
 -- EDIT to PROG_USER: set up for Key-Pair auth
 ALTER USER PROG_USER SET TYPE='SERVICE';
 ALTER USER PROG_USER SET RSA_PUBLIC_KEY = '<key ommitted for repository push. see ~/source/rsa_keys/ or AWS secrets manager';
+
+USE ROLE ACCOUNTADMIN;
+GRANT ROLE BOOKS_ADMIN TO ROLE PROG_USER_ROLE;
