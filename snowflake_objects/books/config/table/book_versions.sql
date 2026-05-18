@@ -18,7 +18,6 @@ INSERT INTO BOOKS.CONFIG.BOOK_VERSIONS (
 
 VALUES
 
--- Print ISBNs
 (12, '9781537293424', 'ISBN', $$Rothaker: A Dark Psychological Suspense Novel$$,         'Print', 'EN'),
 (11, '9781537294711', 'ISBN', $$Everett: A Dark Psychological Suspense Novel$$,           'Print', 'EN'),
 (13, '9781724682000', 'ISBN', $$The Intern: A Dark Thriller$$,                            'Print', 'EN'),
@@ -67,7 +66,6 @@ VALUES
 (15, '9798271860942', 'ISBN', $$SOLO UNA CURA: La Serie Thriller Medici FBI & CDC 2$$,    'Print', 'IT'),
 (14, '9798271894848', 'ISBN', $$SOLO UN ERRORE: La Serie Thriller Medici FBI & CDC 1$$,   'Print', 'IT'),
 
--- eBook ASINs
 (18, 'B01H7QSKHE', 'ASIN', $$Lauren's Secret: Full-Out$$,                                'eBook', 'EN'),
 (12, 'B01L0ZXPPK', 'ASIN', $$Rothaker: A Dark Psychological Suspense Novel$$,            'eBook', 'EN'),
 (11, 'B01L0ZXUT6', 'ASIN', $$Everett: A Dark Psychological Suspense Novel$$,              'eBook', 'EN'),
@@ -126,7 +124,8 @@ VALUES
 (14, 'B0GJSXG7N3', 'ASIN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'eBook', 'DE'),
 (9, '9781954447301', 'ISBN', $$The Bad Neighbor$$, 'Print', 'EN'),
 (8, '9781954447318', 'ISBN', $$The Ones They Buried$$, 'Print', 'EN'),
-(14, '9798245707471', 'ISBN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'Print', 'DE')
+(14, '9798245707471', 'ISBN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'Print', 'DE'),
+(5, 'B0GX2ZW2SJ', 'ASIN', $$DESAPARECIÓ EL NOVIO: Las investigaciones de Victoria Heslin 5$$, 'eBook', 'ES')
 ;
 
 
