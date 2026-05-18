@@ -9,6 +9,7 @@ CREATE TABLE IF NOT EXISTS BOOKS.CONFIG.BOOK_VERSIONS (
     VERSION_LANGUAGE VARCHAR
 );
 
+TRUNCATE TABLE BOOKS.CONFIG.BOOK_VERSIONS;
 
 INSERT INTO BOOKS.CONFIG.BOOK_VERSIONS (
     BOOK_SID,  BOOK_VERSION_UNIQUE_ID, BOOK_VERSION_UNIQUE_ID_TYPE,
@@ -119,7 +120,13 @@ VALUES
 (3,  'B0GX2WV4CZ', 'ASIN', $$CUANDO NOS ENCUENTREN: Las investigaciones de Victoria Heslin 3$$,'eBook','ES'),
 (4,  'B0GZPF9JBL', 'ASIN', $$LA SOMBRA DE LA DUDA: Las investigaciones de Victoria Heslin 4$$,'eBook','ES'),
 (2,  'B0GZS3BSHD', 'ASIN', $$NIÑAS PERFECTAS: Las investigaciones de Victoria Heslin 2$$, 'eBook', 'ES'),
-(1,  'B0H15GGWJL', 'ASIN', $$EL ASESINO DE LOS NÚMEROS: Las investigaciones de Victoria Heslin 1$$,'eBook','ES')
+(1,  'B0H15GGWJL', 'ASIN', $$EL ASESINO DE LOS NÚMEROS: Las investigaciones de Victoria Heslin 1$$,'eBook','ES'),
+(16, 'B0GJTLT2P1', 'ASIN', $$NUR EINE WELLE: DER TSUNAMI-EFFEKT: FBI & CDC Thrillerserie 3$$, 'eBook', 'DE'),
+(14, 'B075XN3QHD', 'ASIN', $$Only Wrong Once: A Suspense Thriller$$, 'eBook', 'EN'),
+(14, 'B0GJSXG7N3', 'ASIN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'eBook', 'DE'),
+(9, '9781954447301', 'ISBN', $$The Bad Neighbor$$, 'Print', 'EN'),
+(8, '9781954447318', 'ISBN', $$The Ones They Buried$$, 'Print', 'EN'),
+(14, '9798245707471', 'ISBN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'Print', 'DE')
 ;
 
 
