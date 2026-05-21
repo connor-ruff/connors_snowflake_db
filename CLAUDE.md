@@ -3,7 +3,7 @@
 This repository manages the objects in Connor's personal Snowflake account. 
 
 The `snowflake_admin/` folder contains account-level SQL setup (creating new project databases/roles, storage integrations, etc).
-The `snowflake/` folder contains a file structure that mimics Snowflake's database object navigator:
+The `snowflake_objects/` folder contains a file structure that mimics Snowflake's database object navigator:
     - Database
         - Schema 1
             - Tables

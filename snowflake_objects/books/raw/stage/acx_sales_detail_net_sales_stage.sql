@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.ACX_SALES_DETAIL_NET_SALES_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/acx/csv_stage/sales_detail_(net_sales)/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.ACX_SALES_DETAIL_NET_SALES_STAGE;

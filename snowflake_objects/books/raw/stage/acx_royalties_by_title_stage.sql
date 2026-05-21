@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.ACX_ROYALTIES_BY_TITLE_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/acx/csv_stage/royalties_by_title/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.ACX_ROYALTIES_BY_TITLE_STAGE;

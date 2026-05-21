@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.ACX_SUMMARY_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/acx/csv_stage/summary/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.ACX_SUMMARY_STAGE;
