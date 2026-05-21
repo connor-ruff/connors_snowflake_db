@@ -125,7 +125,10 @@ VALUES
 (9, '9781954447301', 'ISBN', $$The Bad Neighbor$$, 'Print', 'EN'),
 (8, '9781954447318', 'ISBN', $$The Ones They Buried$$, 'Print', 'EN'),
 (14, '9798245707471', 'ISBN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'Print', 'DE'),
-(5, 'B0GX2ZW2SJ', 'ASIN', $$DESAPARECIÓ EL NOVIO: Las investigaciones de Victoria Heslin 5$$, 'eBook', 'ES')
+(5, 'B0GX2ZW2SJ', 'ASIN', $$DESAPARECIÓ EL NOVIO: Las investigaciones de Victoria Heslin 5$$, 'eBook', 'ES'),
+(1, '9798196227981', 'ISBN', $$EL ASESINO DE LOS NÚMEROS: Las investigaciones de Victoria Heslin 1$$, 'Print', 'ES'),
+(6, 'B0GX3B6FP8', 'ASIN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'eBook', 'ES')
+
 ;
 
 

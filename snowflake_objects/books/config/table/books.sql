@@ -14,7 +14,7 @@ INSERT INTO BOOKS.CONFIG.BOOKS
 VALUES
 
 
--- 10 Victoria
+-- 10 Victoria  
 (1,  'The Numbers Killer', 'Victoria', 1, FALSE),
 (2,  'Pretty Little Girls', 'Victoria', 2, FALSE),
 (3,  'When They Find Us', 'Victoria', 3, FALSE),
