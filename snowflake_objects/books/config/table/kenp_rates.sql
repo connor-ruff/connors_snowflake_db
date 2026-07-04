@@ -58,32 +58,48 @@ VALUES
 ('2026-03-01', 'Mexico', 0.102804, TRUE),
 
 -- April 2026
-('2026-04-01', 'United States', 0.0046937, FALSE),
-('2026-04-01', 'United Kingdom', 0.0031749, FALSE),
-('2026-04-01', 'Canada', 0.0039157, FALSE),
-('2026-04-01', 'Australia', 0.0038345, FALSE),
-('2026-04-01', 'Germany', 0.0029182, FALSE),
-('2026-04-01', 'India', 0.0793337, FALSE),
-('2026-04-01', 'Spain', 0.0038919, FALSE),
-('2026-04-01', 'Brazil', 0.0099408, FALSE),
-('2026-04-01', 'Japan', 0.419051, FALSE),
-('2026-04-01', 'France', 0.0033144, FALSE),
-('2026-04-01', 'Italy', 0.0031374, FALSE),
-('2026-04-01', 'Netherlands', NULL, FALSE), --- IGNORE ---
-('2026-04-01', 'Mexico', 0.102804, FALSE),
+('2026-04-01', 'United States', 0.0047667, TRUE),
+('2026-04-01', 'United Kingdom', 0.0032, TRUE),
+('2026-04-01', 'Canada', 0.004086, TRUE),
+('2026-04-01', 'Australia', 0.003857, TRUE),
+('2026-04-01', 'Germany', 0.0029238, TRUE),
+('2026-04-01', 'India', 0.0724668, TRUE),
+('2026-04-01', 'Spain', 0.0037699, TRUE),
+('2026-04-01', 'Brazil', 0.0090807, TRUE),
+('2026-04-01', 'Japan', 0.408767, TRUE),
+('2026-04-01', 'France', 0.003207, TRUE),
+('2026-04-01', 'Italy', 0.003235, TRUE),
+('2026-04-01', 'Netherlands', NULL, TRUE), --- IGNORE ---
+('2026-04-01', 'Mexico', 0.109424, TRUE),
 
 -- May 2026
-('2026-05-01', 'United States', 0.0046937, FALSE),
-('2026-05-01', 'United Kingdom', 0.0031749, FALSE),
-('2026-05-01', 'Canada', 0.0039157, FALSE),
-('2026-05-01', 'Australia', 0.0038345, FALSE),
-('2026-05-01', 'Germany', 0.0029182, FALSE),
-('2026-05-01', 'India', 0.0793337, FALSE),
-('2026-05-01', 'Spain', 0.0038919, FALSE),
-('2026-05-01', 'Brazil', 0.0099408, FALSE),
-('2026-05-01', 'Japan', 0.419051, FALSE),
-('2026-05-01', 'France', 0.0033144, FALSE),
-('2026-05-01', 'Italy', 0.0031374, FALSE),
+('2026-05-01', 'United States', 0.0047667, FALSE),
+('2026-05-01', 'United Kingdom', 0.0032, FALSE),
+('2026-05-01', 'Canada', 0.004086, FALSE),
+('2026-05-01', 'Australia', 0.003857, FALSE),
+('2026-05-01', 'Germany', 0.0029238, FALSE),
+('2026-05-01', 'India', 0.0724668, FALSE),
+('2026-05-01', 'Spain', 0.0037699, FALSE),
+('2026-05-01', 'Brazil', 0.0090807, FALSE),
+('2026-05-01', 'Japan', 0.408767, FALSE),
+('2026-05-01', 'France', 0.003207, FALSE),
+('2026-05-01', 'Italy', 0.003235, FALSE),
 ('2026-05-01', 'Netherlands', NULL, FALSE), --- IGNORE ---
-('2026-05-01', 'Mexico', 0.102804, FALSE)
+('2026-05-01', 'Mexico', 0.109424, FALSE),
+
+('2026-06-01', 'United States', 0.0047667, FALSE),
+('2026-06-01', 'United Kingdom', 0.0032, FALSE),
+('2026-06-01', 'Canada', 0.004086, FALSE),
+('2026-06-01', 'Australia', 0.003857, FALSE),
+('2026-06-01', 'Germany', 0.0029238, FALSE),
+('2026-06-01', 'India', 0.0724668, FALSE),
+('2026-06-01', 'Spain', 0.0037699, FALSE),
+('2026-06-01', 'Brazil', 0.0090807, FALSE),
+('2026-06-01', 'Japan', 0.408767, FALSE),
+('2026-06-01', 'France', 0.003207, FALSE),
+('2026-06-01', 'Italy', 0.003235, FALSE),
+('2026-06-01', 'Netherlands', NULL, FALSE), --- IGNORE ---
+('2026-06-01', 'Mexico', 0.109424, FALSE)
+
+-- https://readerlinks.com/kenp_rates/index.php
 ;
