@@ -127,7 +127,33 @@ VALUES
 (14, '9798245707471', 'ISBN', $$NUR EINMAL FALSCH: FBI & CDC Thrillerserie 1$$, 'Print', 'DE'),
 (5, 'B0GX2ZW2SJ', 'ASIN', $$DESAPARECIÓ EL NOVIO: Las investigaciones de Victoria Heslin 5$$, 'eBook', 'ES'),
 (1, '9798196227981', 'ISBN', $$EL ASESINO DE LOS NÚMEROS: Las investigaciones de Victoria Heslin 1$$, 'Print', 'ES'),
-(6, 'B0GX3B6FP8', 'ASIN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'eBook', 'ES')
+(6, 'B0GX3B6FP8', 'ASIN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'eBook', 'ES'),
+
+(5,'9798196883637', 'ISBN', $$DESAPARECIÓ EL NOVIO: Las investigaciones de Victoria Heslin 5$$, 'Print', 'ES'),
+(10,'9798198921948', 'ISBN', $$MENTIRAS EN LA NIEVE: Las investigaciones de Victoria Heslin 10$$, 'Print', 'ES'),
+(3,'9798196417719', 'ISBN', $$CUANDO NOS ENCUENTREN: Las investigaciones de Victoria Heslin 3$$, 'Print', 'ES'),
+(15,'9798245627625', 'ISBN', $$NUR EIN HEILMITTEL: FBI & CDC Thrillerserie$$, 'Print', 'DE'),
+(4,'9798196807183', 'ISBN', $$LA SOMBRA DE LA DUDA: Las investigaciones de Victoria Heslin 4$$, 'Print', 'ES'),
+(7,'B0H2SC9P23', 'ASIN', $$LOS CRÍMENES DE LA EXPIACIÓN: Las investigaciones de Victoria Heslin 7$$, 'eBook', 'ES'),
+(9,'B0H31K1FT8', 'ASIN', $$EL MAL VECINO: Las inves 9tigaciones de Victoria Heslin$$, 'eBook', 'ES'),
+(13,'9798181059092', 'ISBN', $$L'INTERNA: Serie Brooke Walton 3$$, 'Print', 'IT'),
+(17,'9798199576116', 'ISBN', $$QUAND ELLE S'EST ÉCHAPPÉE: Un Thriller$$, 'Print', 'FR'),
+(11,'B0H4S5SJYT', 'ASIN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'eBook', 'IT'),
+(10,'B0H34V91WR', 'ASIN', $$MENTIRAS EN LA NIEVE: Las investigaciones de Victoria Heslin 10$$, 'eBook', 'ES'),
+(2,'9798196280580', 'ISBN', $$NIÑAS PERFECTAS: Las investigaciones de Victoria Heslin 2$$, 'Print', 'ES'),
+(8,'9798198936317', 'ISBN', $$LOS ENTERRADOS: Las investigaciones de Victoria Heslin 8$$, 'Print', 'ES'),
+(9,'9798198808911', 'ISBN', $$EL MAL VECINO: Las inves 9tigaciones de Victoria Heslin$$, 'Print', 'ES'),
+(12,'B0H4S2MDFN', 'ASIN', $$LA STUDENTESSA DI MEDICINA: I Segreti di Brooke Walton 2$$, 'eBook', 'IT'),
+(9,'B0H31K1FT8', 'ASIN', $$EL MAL VECINO: Las inves 9tigaciones de Victoria Heslin$$, 'eBook', 'ES'),
+(13,'B0H4RZBKPQ', 'ASIN', $$L'INTERNA: Serie Brooke Walton 3$$, 'eBook', 'IT'),
+(12,'9798181029507', 'ISBN', $$LA STUDENTESSA DI MEDICINA: I Segreti di Brooke Walton 2$$, 'Print', 'IT'),
+(7,'9798198442559', 'ISBN', $$LOS CRÍMENES DE LA EXPIACIÓN: Las investigaciones de Victoria Heslin 7$$, 'Print', 'ES'),
+(17,'9798199576116', 'ISBN', $$QUAND ELLE S'EST ÉCHAPPÉE: Un Thriller$$, 'Print', 'FR'),
+(16,'9798245623870', 'ISBN', $$NUR EINE WELLE: DER TSUNAMI-EFFEKT: FBI & CDC Thrillerserie 3$$, 'Print', 'DE'),
+(17,'B0H35LFGPW', 'ASIN', $$QUAND ELLE S'EST ÉCHAPPÉE: Un Thriller$$, 'eBook', 'FR'),
+(8,'B0H2WDGB6Y', 'ASIN', $$LOS ENTERRADOS: Las investigaciones de Victoria Heslin 8$$, 'eBook', 'ES'),
+(6,'9798197129116', 'ISBN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'Print', 'ES'),
+(11,'9798181018693', 'ISBN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'Print', 'IT')
 
 ;
 
