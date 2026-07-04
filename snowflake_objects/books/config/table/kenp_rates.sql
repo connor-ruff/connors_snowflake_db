@@ -102,4 +102,5 @@ VALUES
 ('2026-06-01', 'Mexico', 0.109424, FALSE)
 
 -- https://readerlinks.com/kenp_rates/index.php
+
 ;
