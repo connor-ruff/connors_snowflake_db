@@ -153,7 +153,8 @@ VALUES
 (17,'B0H35LFGPW', 'ASIN', $$QUAND ELLE S'EST ÉCHAPPÉE: Un Thriller$$, 'eBook', 'FR'),
 (8,'B0H2WDGB6Y', 'ASIN', $$LOS ENTERRADOS: Las investigaciones de Victoria Heslin 8$$, 'eBook', 'ES'),
 (6,'9798197129116', 'ISBN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'Print', 'ES'),
-(11,'9798181018693', 'ISBN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'Print', 'IT')
+(11,'9798181018693', 'ISBN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'Print', 'IT'),
+(19,'B0H1F1GSDW', 'ASIN', $$L'ULTIMO POSTO: UN THRILLER PSICOLOGICO$$, 'eBook', 'IT')
 
 ;
 
