@@ -313,6 +313,19 @@ try {
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
+    // Publish to the public website. Data is already committed, so a failure here
+    // fails the run (and emails) but leaves the week's data loaded.
+    sql_command = `
+        CALL STG.PUBLISH_SLOPCS();
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    result_set = stmt.execute();
+    result_set.next();
+    var publish_response = result_set.getColumnValue(1);
+
+    if (publish_response !== 'SUCCESS') {
+        throw new Error('Data loaded, but publishing SlopCS website failed: ' + publish_response);
+    }
 
     sql_command = `
         UPDATE STG.AUDIT
