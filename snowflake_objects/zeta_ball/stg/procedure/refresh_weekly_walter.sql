@@ -22,6 +22,20 @@ try {
     result_set.next();
     var audit_sid = result_set.getColumnValue('AUDIT_SID');
 
+    // Refresh team names first. This runs (and commits) its own transaction before ours begins,
+    // and it catches its own errors and returns them as a string, so check the return value.
+    sql_command = `
+        CALL STG.REFRESH_TEAMS_WALTER();
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    result_set = stmt.execute();
+    result_set.next();
+    var teams_response = result_set.getColumnValue(1);
+
+    if (teams_response !== 'SUCCESS') {
+        throw new Error('Team names refresh failed: ' + teams_response);
+    }
+
     // Get current season and week number
     var current_season;
     var current_week_number;
