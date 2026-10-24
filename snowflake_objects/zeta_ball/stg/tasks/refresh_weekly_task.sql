@@ -1,9 +1,9 @@
 CREATE OR REPLACE TASK STG.REFRESH_WEEKLY_TASK
   WAREHOUSE = COMPUTE_WH
   SCHEDULE = 'USING CRON 0 20 * * 1 US/Eastern'  -- 8:00 PM ET every Monday
-  COMMENT = 'Run the STG.REFRESH_WEEKLY() procedure every Monday at 8 PM ET'
+  COMMENT = 'Run the STG.REFRESH_WEEKLY_WALTER() procedure every Monday at 8 PM ET'
 AS
-  CALL STG.REFRESH_WEEKLY();
+  CALL STG.REFRESH_WEEKLY_WALTER();
 
 
 -- To activate the task after creation, run:
