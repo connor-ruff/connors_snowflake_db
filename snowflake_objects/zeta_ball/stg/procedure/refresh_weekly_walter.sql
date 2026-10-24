@@ -37,9 +37,6 @@ try {
     current_season = result_set.getColumnValue('CURRENT_SEASON');
     current_week_number = result_set.getColumnValue('WEEK_DIFF');
 
-    // temporary hard code for testing 
-    current_week_number = 1;
-
     if (current_week_number < 1) {
         throw new Error('No completed week to pull yet (week ' + current_week_number + ')');
     }
