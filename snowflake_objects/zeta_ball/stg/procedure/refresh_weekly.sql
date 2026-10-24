@@ -33,26 +33,19 @@ try {
     var WEEK_NUMBER = result_set.getColumnValue('WEEK_DIFF');
 
     // Call external function
-    var team_key_list = [
-        "466.l.6036.t.8",
-        "466.l.6036.t.7",
-        "466.l.6036.t.14",
-        "466.l.6036.t.2",
-        "466.l.6036.t.5",
-        "466.l.6036.t.6",
-        "466.l.6036.t.11",
-        "466.l.6036.t.13",
-        "466.l.6036.t.12",
-        "466.l.6036.t.1",
-        "466.l.6036.t.10",
-        "466.l.6036.t.4",
-        "466.l.6036.t.15",
-        "466.l.6036.t.9",
-        "466.l.6036.t.18",
-        "466.l.6036.t.16",
-        "466.l.6036.t.3",
-        "466.l.6036.t.17",
-    ];
+    sql_command = `
+        SELECT TEAM_KEY FROM DWH.TEAMS
+        ORDER BY TEAM_ID
+    ;`;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    result_set = stmt.execute();
+    var team_key_list = [];
+    while (result_set.next()) {
+        team_key_list.push(result_set.getColumnValue('TEAM_KEY'));
+    }
+    if (team_key_list.length === 0) {
+        throw new Error('DWH.TEAMS is empty; no team keys to refresh');
+    }
 
     for (var i = 0; i < team_key_list.length; i++) {
         var team_key = team_key_list[i];
@@ -456,11 +449,14 @@ try {
         UPDATE STG.AUDIT
         SET 
             SUCCESS_FLG = FALSE,
-            RESULT_MSG = 'FAILED: ' || '${err.message}',
+            RESULT_MSG = ?,
             END_DT = CURRENT_TIMESTAMP()
-        WHERE AUDIT_SID = ${audit_sid};
+        WHERE AUDIT_SID = ?;
     `;
-    var log_error_stmt = snowflake.createStatement({sqlText: log_error_command});
+    var log_error_stmt = snowflake.createStatement({
+        sqlText: log_error_command,
+        binds: ['FAILED: ' + err.message, audit_sid]
+    });
     log_error_stmt.execute();
 
     var sql_command = `

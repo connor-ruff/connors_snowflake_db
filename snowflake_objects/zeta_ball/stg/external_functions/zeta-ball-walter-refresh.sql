@@ -1,0 +1,16 @@
+USE ROLE ZETA_BALL_ADMIN;
+USE SCHEMA ZETA_BALL.STG;
+
+-- Args are a placeholder until the Lambda payload is designed.
+CREATE OR REPLACE EXTERNAL FUNCTION ZETA_BALL_WALTER_REFRESH_LAMBDA_TRIGGER(
+    REFRESH_TYPE_ID INT, 
+    INPUT_FIELD_1 VARCHAR, 
+    INPUT_FIELD_2 VARCHAR,
+    INPUT_FIELD_3 VARCHAR,
+    INPUT_FIELD_4 VARCHAR,
+    INPUT_FIELD_5 VARCHAR
+)
+    RETURNS VARIANT
+    API_INTEGRATION = AWS_LAMBDA_EXTERNAL_FUNCTIONS_GENERAL
+    AS 'https://1dmrv6cveg.execute-api.us-east-2.amazonaws.com/prod/lambda-zeta-ball-walter-refresh'
+;
