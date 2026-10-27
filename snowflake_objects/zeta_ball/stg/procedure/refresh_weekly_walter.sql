@@ -135,7 +135,8 @@ try {
 
             T.VALUE:manager::VARCHAR AS MANAGER,
             T.VALUE:team::VARCHAR AS TEAM_NAME,
-            T.VALUE:team_id::INT AS TEAM_ID,
+            -- Walter's team_id now comes through null; the Yahoo team id is the suffix of team_key (<league_key>.t.<team>)
+            COALESCE(T.VALUE:team_id::INT, SPLIT_PART(T.VALUE:team_key::VARCHAR, '.t.', 2)::INT) AS TEAM_ID,
 
             C.VALUE:category::VARCHAR AS CATEGORY,
             GET(C.VALUE:values, T.INDEX)::FLOAT AS CATEGORY_VALUE,

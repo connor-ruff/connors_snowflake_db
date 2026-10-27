@@ -95,7 +95,7 @@ try {
                 LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) F,
                 DWH.TEAMS T
                 WHERE T.LEAGUE_START_YEAR = R.SEASON
-                    AND T.YAHOO_TEAM_ID = F.VALUE:team_id::INT
+                    AND T.YAHOO_TEAM_ID = COALESCE(F.VALUE:team_id::INT, SPLIT_PART(F.VALUE:team_key::VARCHAR, '.t.', 2)::INT)
             ) AS MATCHED_TEAMS
         ;
     `;
@@ -114,7 +114,7 @@ try {
         USING (
             SELECT
                 R.SEASON,
-                F.VALUE:team_id::INT AS TEAM_ID,
+                COALESCE(F.VALUE:team_id::INT, SPLIT_PART(F.VALUE:team_key::VARCHAR, '.t.', 2)::INT) AS TEAM_ID,
                 F.VALUE:team::VARCHAR AS TEAM_NAME
             FROM STG.TEAMS_WALTER_RAW R,
             LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) F
