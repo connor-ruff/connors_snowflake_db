@@ -24,6 +24,7 @@ try {
 
     // One row, one JSON object, so each file is a single valid JSON document.
     // The SlopCS algorithm is proprietary: publish only rank, team, and score, never the inputs.
+    // The score is scaled by 10000 (2 decimals, from the unrounded inputs) so it does not read as a percentage.
     var payload_query = `
         SELECT OBJECT_CONSTRUCT(
             'league_start_year', ${season},
@@ -33,7 +34,7 @@ try {
                 OBJECT_CONSTRUCT_KEEP_NULL(
                     'rank', C.SLOP_CS_RANK,
                     'team', C.TEAM,
-                    'slopcs_score', C.WIN_PERCENTAGE
+                    'slopcs_score', ROUND((C.WINS + C.TIES * 0.5) / C.TOTAL_GAMES * 10000, 2)
                 )
             ) WITHIN GROUP (ORDER BY C.SLOP_CS_RANK, C.TEAM)
         )
