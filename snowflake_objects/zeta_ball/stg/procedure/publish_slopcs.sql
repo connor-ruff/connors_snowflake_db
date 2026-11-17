@@ -32,11 +32,11 @@ try {
             'generated_at', TO_VARCHAR(CONVERT_TIMEZONE('UTC', CURRENT_TIMESTAMP()), 'YYYY-MM-DD"T"HH24:MI:SS"Z"'),
             'rankings', ARRAY_AGG(
                 OBJECT_CONSTRUCT_KEEP_NULL(
-                    'rank', C.SLOP_CS_RANK,
+                    'rank', C.ADJUSTED_SLOP_CS_RANK,
                     'team', C.TEAM,
-                    'slopcs_score', ROUND((C.WINS + C.TIES * 0.5) / C.TOTAL_GAMES * 10000, 2)
+                    'slopcs_score', C.ADJUSTED_SLOP_CS_SCORE
                 )
-            ) WITHIN GROUP (ORDER BY C.SLOP_CS_RANK, C.TEAM)
+            ) WITHIN GROUP (ORDER BY C.ADJUSTED_SLOP_CS_RANK, C.TEAM)
         )
         FROM DWH.SLOP_CS_RANKINGS_BY_WEEK C
         WHERE C.LEAGUE_START_YEAR = ${season}
