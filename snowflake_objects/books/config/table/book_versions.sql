@@ -180,7 +180,32 @@ VALUES
 (25,'B0HPTYYX9S', 'ASIN', $$SOTTO L’ALBERO: Un thriller di Natale$$, 'eBook', 'IT'),
 (25,'B0HQK3KBDX', 'ASIN', $$Sous le sapin: Un thriller de Noël$$, 'eBook', 'FR'),
 (25, 'B0HQZV2H57', 'ASIN', $$BAJO EL ÁRBOL: Un thriller navideño$$, 'eBook', 'ES'),
-(25, 'B0HR6YR8QD', 'ASIN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'eBook', 'DE')
+(25, 'B0HR6YR8QD', 'ASIN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'eBook', 'DE'),
+
+(14, 'ACX-BK_ACX0_109794', 'ACX-ROYALTY-EARNER', $$Only Wrong Once: A Suspense Thriller (Unabridged)$$, 'Audio', 'EN'),
+(11, 'ACX-BK_ACX0_132819', 'ACX-ROYALTY-EARNER', $$Everett: A Dark Psychological Suspense Novel (Brooke Walton Series Book 1) (Unabridged)$$, 'Audio', 'EN'),
+(12, 'ACX-BK_ACX0_139978', 'ACX-ROYALTY-EARNER', $$Rothaker: A Dark Psychological Suspense Novel: Brooke Walton Series, Book 2 (Unabridged)$$, 'Audio', 'EN'),
+(13, 'ACX-BK_ACX0_142975', 'ACX-ROYALTY-EARNER', $$The Intern: A Dark Thriller: Brooke Walton, Book 3 (Unabridged)$$, 'Audio', 'EN'),
+(15, 'ACX-BK_ACX0_205311', 'ACX-ROYALTY-EARNER', $$Only One Cure: FBI and CDC Thriller Series, Book 2 (Unabridged)$$, 'Audio', 'EN'),
+(3, 'ACX-BK_ACX0_221318', 'ACX-ROYALTY-EARNER', $$When They Find Us: Agent Victoria Heslin Thriller, Book 3 (Unabridged)$$, 'Audio', 'EN'),
+(16, 'ACX-BK_ACX0_287671', 'ACX-ROYALTY-EARNER', $$Only One Wave: The Tsunami Effect (FBI and CDC Medical Thriller, Book 3) (Unabridged)$$, 'Audio', 'EN'),
+(5, 'ACX-BK_ACX0_308042', 'ACX-ROYALTY-EARNER', $$The Groom Went Missing: Agent Victoria Heslin Series, Book 5 (Unabridged)$$, 'Audio', 'EN'),
+(6, 'ACX-BK_ACX0_326295', 'ACX-ROYALTY-EARNER', $$Vanished on Vacation: Agent Victoria Heslin Series, Book 6 (Unabridged)$$, 'Audio', 'EN'),
+(7, 'ACX-BK_ACX0_348175', 'ACX-ROYALTY-EARNER', $$The Atonement Murders: Agent Victoria Heslin Series, Book 7 (Unabridged)$$, 'Audio', 'EN'),
+(8, 'ACX-BK_ACX0_368747', 'ACX-ROYALTY-EARNER', $$The Ones They Buried: Agent Victoria Heslin Series, Book 8 (Unabridged)$$, 'Audio', 'EN'),
+(9, 'ACX-BK_ACX0_416232', 'ACX-ROYALTY-EARNER', $$The Bad Neighbor: Agent Victoria Heslin Series, Book 9 (Unabridged)$$, 'Audio', 'EN'),
+(1, 'ACX-BK_ACX0_442979', 'ACX-ROYALTY-EARNER', $$The Numbers Killer: Agent Victoria Heslin Series, Book 1 (Unabridged)$$, 'Audio', 'EN'),
+(2, 'ACX-BK_ACX0_442984', 'ACX-ROYALTY-EARNER', $$Pretty Little Girls: Agent Victoria Heslin Series, Book 2 (Unabridged)$$, 'Audio', 'EN'),
+(21, 'ACX-BK_ACX0_447010', 'ACX-ROYALTY-EARNER', $$Agent Victoria Heslin Thriller Series, Books 1-3 (Unabridged)$$, 'Audio', 'EN'),
+(17, 'ACX-BK_ACX0_453185', 'ACX-ROYALTY-EARNER', $$When She Escaped: A Thriller (Unabridged)$$, 'Audio', 'EN'),
+(10, 'ACX-BK_ACX0_481138', 'ACX-ROYALTY-EARNER', $$Lies in the Snow: Agent Victoria Heslin Series, Book 10 (Unabridged)$$, 'Audio', 'EN'),
+(19, 'ACX-BK_ACX0_502512', 'ACX-ROYALTY-EARNER', $$The Last Seat: A Thriller (Unabridged)$$, 'Audio', 'EN'),
+(14, 'ACX-BK_ACX0_511022', 'ACX-ROYALTY-EARNER', $$Only Wrong Once: FBI and CDC Medical Thriller, Book 1 (Unabridged)$$, 'Audio', 'EN'),
+(11, 'ACX-BK_ACX0_511028', 'ACX-ROYALTY-EARNER', $$Everett: A Dark Psychological Suspense Novel (Brooke Walton, Book 1) (Unabridged)$$, 'Audio', 'EN'),
+(12, 'ACX-BK_ACX0_511031', 'ACX-ROYALTY-EARNER', $$Rothaker: A Dark Psychological Suspense Novel (Brooke Walton, Book 2) (Unabridged)$$, 'Audio', 'EN'),
+(13, 'ACX-BK_ACX0_511035', 'ACX-ROYALTY-EARNER', $$The Intern: A Dark Thriller (Brooke Walton, Book 3) (Unabridged)$$, 'Audio', 'EN'),
+(20, 'ACX-BK_ACX0_511229', 'ACX-ROYALTY-EARNER', $$Brooke Walton : Series 1-3 (Unabridged)$$, 'Audio', 'EN'),
+(24, 'ACX-BK_ACX0_537121', 'ACX-ROYALTY-EARNER', $$SOMEONE HAS TO CONFESS$$, 'Audio', 'EN')
 ;
 
 

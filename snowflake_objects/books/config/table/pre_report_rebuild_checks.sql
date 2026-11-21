@@ -170,4 +170,36 @@ WHERE
 $$,
 
     TRUE
+),
+
+
+(
+    8, 'ACX_BOOK_VERSIONS',
+    'All ROYALTY_EARNER values across the various ACX tables have corresponding entries in CONFIG.BOOK_VERSIONS.',
+    'Unmatched rows would show up in reports with no book, version type or language.',
+
+$$
+WITH ALL_ENTRIES AS (
+    SELECT ROYALTY_EARNER, TITLE 
+    FROM ACX.ADJUSTMENTS
+    WHERE ROYALTY_EARNER <> 'Total'
+    UNION 
+    SELECT 
+        ROYALTY_EARNER, TITLE
+    FROM ACX.SALES_DETAIL_MEMBER_VALUE
+    UNION 
+    SELECT 
+        ROYALTY_EARNER, TITLE
+    FROM ACX.SALES_DETAIL_NET_SALES
+
+)
+SELECT 
+    COUNT(*)  = 0 AS PASS_TEST
+FROM ALL_ENTRIES AE 
+LEFT JOIN CONFIG.BOOK_VERSIONS BV ON BV.BOOK_VERSION_UNIQUE_ID = AE.ROYALTY_EARNER
+WHERE BV.BOOK_VERSION_UNIQUE_ID IS NULL 
+;
+$$,
+
+    TRUE
 )
