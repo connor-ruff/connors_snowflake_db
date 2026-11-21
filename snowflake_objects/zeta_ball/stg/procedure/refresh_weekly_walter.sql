@@ -36,6 +36,19 @@ try {
         throw new Error('Team names refresh failed: ' + teams_response);
     }
 
+    // Refresh current rosters 
+    sql_command = `
+        CALL STG.REFRESH_ROSTERS_WALTER();
+    `;
+    stmt = snowflake.createStatement({sqlText: sql_command});
+    result_set = stmt.execute();
+    result_set.next();
+    var rosters_response = result_set.getColumnValue(1);
+
+    if (rosters_response !== 'SUCCESS') {
+        throw new Error('Current rosters refresh failed: ' + rosters_response);
+    }
+
     // Get current season and week number
     var current_season;
     var current_week_number;
