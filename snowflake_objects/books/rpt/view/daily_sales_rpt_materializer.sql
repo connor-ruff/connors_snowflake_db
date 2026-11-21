@@ -1,47 +1,123 @@
 -- Column order must match BOOKS.RPT.DAILY_SALES_REPORT exactly (loaded with INSERT ... SELECT *)
 CREATE OR REPLACE VIEW BOOKS.RPT.DAILY_SALES_RPT_MATERIALIZER AS
-SELECT
-    BV.BOOK_SID                                                 AS BOOK_SID,
-    BV.BOOK_VERSION_SID                                         AS BOOK_VERSION_SID,
-    NVL(B.TITLE, 'UNKNOWN')                                     AS BOOK_TITLE,
-    'KDP'                                                       AS SALE_SOURCE,
-    BV.VERSION_TYPE                                             AS VERSION_TYPE,
-    BV.VERSION_LANGUAGE                                         AS VERSION_LANGUAGE,
-    CS.MARKETPLACE                                              AS MARKETPLACE,
-    CS.ROYALTY_DATE                                             AS ROYALTY_DATE,
-    SUM(FOREX.EXCHANGE_RATE * CS.ROYALTY)                       AS ROYALTY_IN_USD,
-    SUM(NVL(CS.UNITS_SOLD, 0) - NVL(CS.UNITS_REFUNDED, 0))      AS NET_UNITS_SOLD,
-    NULL                                                        AS PAGE_READS,
-    CURRENT_TIMESTAMP()                                         AS LAST_MATERIALIZED_DT
-FROM       BOOKS.KDP.COMBINED_SALES CS
-LEFT JOIN  BOOKS.CONFIG.BOOK_VERSIONS BV  ON  BV.BOOK_VERSION_UNIQUE_ID = CS.ASIN_ISBN
-LEFT JOIN  BOOKS.CONFIG.FOREX_RATES FOREX ON  FOREX.SOURCE_CURRENCY  = CS.CURRENCY
-                                          AND FOREX.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', CS.ROYALTY_DATE)
-LEFT JOIN  BOOKS.CONFIG.BOOKS B           ON  B.BOOK_SID = BV.BOOK_SID
-GROUP BY ALL
+
+WITH KDP_SALES AS (
+    SELECT
+        BV.BOOK_SID                                                 AS BOOK_SID,
+        BV.BOOK_VERSION_SID                                         AS BOOK_VERSION_SID,
+        NVL(B.TITLE, 'UNKNOWN')                                     AS BOOK_TITLE,
+        'KDP'                                                       AS SALE_SOURCE,
+        BV.VERSION_TYPE                                             AS VERSION_TYPE,
+        BV.VERSION_LANGUAGE                                         AS VERSION_LANGUAGE,
+        CS.MARKETPLACE                                              AS MARKETPLACE,
+        CS.ROYALTY_DATE                                             AS ROYALTY_DATE,
+        SUM(FOREX.EXCHANGE_RATE * CS.ROYALTY)                       AS ROYALTY_IN_USD,
+        SUM(NVL(CS.UNITS_SOLD, 0) - NVL(CS.UNITS_REFUNDED, 0))      AS NET_UNITS_SOLD,
+        NULL                                                        AS PAGE_READS,
+        CURRENT_TIMESTAMP()                                         AS LAST_MATERIALIZED_DT
+    FROM       BOOKS.KDP.COMBINED_SALES CS
+    LEFT JOIN  BOOKS.CONFIG.BOOK_VERSIONS BV  ON  BV.BOOK_VERSION_UNIQUE_ID = CS.ASIN_ISBN
+    LEFT JOIN  BOOKS.CONFIG.FOREX_RATES FOREX ON  FOREX.SOURCE_CURRENCY  = CS.CURRENCY
+                                            AND FOREX.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', CS.ROYALTY_DATE)
+    LEFT JOIN  BOOKS.CONFIG.BOOKS B           ON  B.BOOK_SID = BV.BOOK_SID
+    GROUP BY ALL
+),
+KDP_KENP AS (
+    SELECT
+        BV.BOOK_SID                                                 AS BOOK_SID,
+        BV.BOOK_VERSION_SID                                         AS BOOK_VERSION_SID,
+        B.TITLE                                                     AS BOOK_TITLE,
+        'KDP - KENP'                                                AS SALE_SOURCE,
+        BV.VERSION_TYPE                                             AS VERSION_TYPE,
+        BV.VERSION_LANGUAGE                                         AS VERSION_LANGUAGE,
+        K.MARKETPLACE                                               AS MARKETPLACE,
+        K.KENP_DATE                                                 AS ROYALTY_DATE,
+        SUM(K.KENP * KR.KENP_RATE * FR.EXCHANGE_RATE)               AS ROYALTY_IN_USD,
+        NULL                                                        AS NET_UNITS_SOLD,
+        SUM(K.KENP)                                                 AS PAGE_READS,
+        CURRENT_TIMESTAMP()                                         AS LAST_MATERIALIZED_DT
+        
+    FROM       BOOKS.KDP.KENP K
+    LEFT JOIN  BOOKS.CONFIG.MARKETPLACES M   ON  M.AMAZON_NAME = K.MARKETPLACE
+    LEFT JOIN  BOOKS.CONFIG.KENP_RATES KR    ON  KR.COUNTRY = M.COUNTRY
+                                            AND KR.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', K.KENP_DATE)
+    LEFT JOIN  BOOKS.CONFIG.BOOK_VERSIONS BV ON  BV.BOOK_VERSION_UNIQUE_ID = K.EBOOK_ASIN
+    LEFT JOIN  BOOKS.CONFIG.BOOKS B          ON  B.BOOK_SID = BV.BOOK_SID
+    LEFT JOIN  BOOKS.CONFIG.FOREX_RATES FR   ON  FR.SOURCE_CURRENCY = M.CURRENCY
+                                            AND FR.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', K.KENP_DATE)
+    GROUP BY ALL
+),
+ACX_UNIFIED_ROWS AS (
+    SELECT 
+        'Net Sales' AS ACX_TYPE, 
+        ROYALTY_EARNER,
+        MARKETPLACE,
+        DP_SOURCE_FILE_MONTH AS ROYALTY_MONTH,
+        NET_ROYALTIES_EARNED AS ROYALTY_IN_USD,
+        NET_UNITS AS NET_UNITS_SOLD
+    FROM ACX.SALES_DETAIL_NET_SALES 
+    UNION ALL
+    SELECT 
+        'Member Value' AS ACX_TYPE, 
+        ROYALTY_EARNER,
+        MARKETPLACE,
+        DP_SOURCE_FILE_MONTH AS ROYALTY_MONTH,
+        NET_ROYALTIES_EARNED_EARNER_CURRENCY AS ROYALTY_IN_USD,
+        0 AS NET_UNITS_SOLD
+    FROM ACX.SALES_DETAIL_MEMBER_VALUE
+),
+ACX_SALES_MONTHLY AS (
+    SELECT 
+        B.BOOK_SID, BV.BOOK_VERSION_SID,
+        B.TITLE AS BOOK_TITLE,
+        'ACX' AS SALE_SOURCE,
+        BV.VERSION_TYPE,
+        BV.VERSION_LANGUAGE,
+        A.MARKETPLACE,
+        A.ROYALTY_MONTH,
+        SUM(A.ROYALTY_IN_USD) AS ROYALTY_IN_USD,
+        SUM(A.NET_UNITS_SOLD) AS NET_UNITS_SOLD,
+        NULL AS PAGE_READS
+    FROM ACX_UNIFIED_ROWS A 
+    LEFT JOIN CONFIG.BOOK_VERSIONS BV ON BV.BOOK_VERSION_UNIQUE_ID = A.ROYALTY_EARNER
+    LEFT JOIN CONFIG.BOOKS B ON B.BOOK_SID = BV.BOOK_SID
+    GROUP BY ALL
+),
+
+-- Take the monthly ACX sales and convert them to daily sales by dividing equally by day
+ACX_SALES_DAILY AS (
+    SELECT 
+        A.BOOK_SID,
+        A.BOOK_VERSION_SID,
+        A.BOOK_TITLE,
+        A.SALE_SOURCE,
+        A.VERSION_TYPE,
+        A.VERSION_LANGUAGE,
+        A.MARKETPLACE,
+        C.CALENDAR_DATE AS ROYALTY_DATE,
+        ROUND(A.ROYALTY_IN_USD / DAY(LAST_DAY(A.ROYALTY_MONTH, 'MONTH')), 10) AS ROYALTY_IN_USD,
+        ROUND(A.NET_UNITS_SOLD / DAY(LAST_DAY(A.ROYALTY_MONTH, 'MONTH')), 10) AS NET_UNITS_SOLD,
+        NULL AS PAGE_READS,
+        CURRENT_TIMESTAMP() AS LAST_MATERIALIZED_DT
+    FROM ACX_SALES_MONTHLY A
+    JOIN CONFIG.CALENDAR C 
+        ON C.CALENDAR_DATE >= DATE_TRUNC('MONTH', A.ROYALTY_MONTH)
+       AND C.CALENDAR_DATE <= LAST_DAY(A.ROYALTY_MONTH, 'MONTH')
+)
+
+
+-- KDP SALES
+SELECT * FROM KDP_SALES
 
 UNION ALL
 
-SELECT
-    BV.BOOK_SID                                                 AS BOOK_SID,
-    BV.BOOK_VERSION_SID                                         AS BOOK_VERSION_SID,
-    B.TITLE                                                     AS BOOK_TITLE,
-    'KDP - KENP'                                                AS SALE_SOURCE,
-    BV.VERSION_TYPE                                             AS VERSION_TYPE,
-    BV.VERSION_LANGUAGE                                         AS VERSION_LANGUAGE,
-    K.MARKETPLACE                                               AS MARKETPLACE,
-    K.KENP_DATE                                                 AS ROYALTY_DATE,
-    SUM(K.KENP * KR.KENP_RATE * FR.EXCHANGE_RATE)               AS ROYALTY_IN_USD,
-    NULL                                                        AS NET_UNITS_SOLD,
-    SUM(K.KENP)                                                 AS PAGE_READS,
-    CURRENT_TIMESTAMP()                                         AS LAST_MATERIALIZED_DT
-    
-FROM       BOOKS.KDP.KENP K
-LEFT JOIN  BOOKS.CONFIG.MARKETPLACES M   ON  M.AMAZON_NAME = K.MARKETPLACE
-LEFT JOIN  BOOKS.CONFIG.KENP_RATES KR    ON  KR.COUNTRY = M.COUNTRY
-                                         AND KR.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', K.KENP_DATE)
-LEFT JOIN  BOOKS.CONFIG.BOOK_VERSIONS BV ON  BV.BOOK_VERSION_UNIQUE_ID = K.EBOOK_ASIN
-LEFT JOIN  BOOKS.CONFIG.BOOKS B          ON  B.BOOK_SID = BV.BOOK_SID
-LEFT JOIN  BOOKS.CONFIG.FOREX_RATES FR   ON  FR.SOURCE_CURRENCY = M.CURRENCY
-                                         AND FR.MONTH_BEGIN_DATE = DATE_TRUNC('MONTH', K.KENP_DATE)
-GROUP BY ALL;
+-- KDP KENP
+SELECT * FROM KDP_KENP
+
+UNION ALL 
+
+-- ACX SALES DAILY
+SELECT * FROM ACX_SALES_DAILY
+;
+
+
