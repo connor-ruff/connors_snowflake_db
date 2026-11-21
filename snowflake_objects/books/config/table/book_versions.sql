@@ -181,6 +181,7 @@ VALUES
 (25,'B0HQK3KBDX', 'ASIN', $$Sous le sapin: Un thriller de Noël$$, 'eBook', 'FR'),
 (25, 'B0HQZV2H57', 'ASIN', $$BAJO EL ÁRBOL: Un thriller navideño$$, 'eBook', 'ES'),
 (25, 'B0HR6YR8QD', 'ASIN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'eBook', 'DE'),
+(5, '9781954447196', 'ISBN', $$The Groom Went Missing$$, 'Print', 'EN'),
 
 (14, 'ACX-BK_ACX0_109794', 'ACX-ROYALTY-EARNER', $$Only Wrong Once: A Suspense Thriller (Unabridged)$$, 'Audio', 'EN'),
 (11, 'ACX-BK_ACX0_132819', 'ACX-ROYALTY-EARNER', $$Everett: A Dark Psychological Suspense Novel (Brooke Walton Series Book 1) (Unabridged)$$, 'Audio', 'EN'),
