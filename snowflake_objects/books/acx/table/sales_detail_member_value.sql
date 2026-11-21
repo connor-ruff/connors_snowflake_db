@@ -1,0 +1,33 @@
+CREATE TABLE IF NOT EXISTS BOOKS.ACX.SALES_DETAIL_MEMBER_VALUE (
+    AMAZON_CUSTOMER_ID                   VARCHAR(50),
+    ROYALTY_EARNER                       VARCHAR(250),
+    PARENT_PRODUCT                       VARCHAR(50),
+    AUTHOR                               VARCHAR(250),
+    TITLE                                VARCHAR(250),
+    DIGITAL_ISBN                         VARCHAR(50),
+    PROVIDER_PRODUCT_ID                  VARCHAR(50),
+    MARKETPLACE                          VARCHAR(10),
+    LOCAL_CURRENCY                       VARCHAR(10),
+    MEMBERSHIP_TYPE                      VARCHAR(50),
+    TRANSACTION_TYPE                     VARCHAR(50),
+    AVG_ALC_PRICE_LOCAL_CURRENCY         NUMBER(38,10),
+    AVG_RESERVE_CREDITS_PER_CUSTOMER     NUMBER(38,10),
+    MEMBERSHIP_VALUE_LOCAL_CURRENCY      NUMBER(38,10),
+    RESERVE_CREDIT_VALUE_LOCAL_CURRENCY  NUMBER(38,10),
+    AVG_MEMBER_VALUE_LOCAL_CURRENCY      NUMBER(38,10),
+    EFFECTIVE_AVG_PWCS                   NUMBER(38,10),
+    MEMBER_VALUE_PER_UNIT_LOCAL_CURRENCY NUMBER(38,10),
+    ROYALTY_RATE                         NUMBER(38,10),
+    PAYEE_SPLIT                          NUMBER(38,2),
+    FX_RATE                              NUMBER(38,10),
+    EARNER_CURRENCY                      VARCHAR(10),
+    TOTAL_QUALIFIED_LISTENS              NUMBER(38,2),
+    TOTAL_CREDIT_UNITS                   NUMBER(38,2),
+    NET_ROYALTIES_EARNED_EARNER_CURRENCY NUMBER(38,10),
+    
+    DP_SOURCE_FILE_MONTH                 DATE,      -- First Date of the month of the earnings file
+    DP_RUN_ID                            VARCHAR,
+    DP_SOURCE_FILE_NAME                  VARCHAR,
+    DP_SOURCE_FILE_ROW_NUMBER            INT,
+    DP_LOAD_TIMESTAMP                    TIMESTAMP_NTZ(9)
+);

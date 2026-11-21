@@ -19,6 +19,8 @@ BEGIN
     FROM   BOOKS.CONFIG.SOURCE_TABLE_INFO
     WHERE  TARGET_TABLE_NAME = :TARGET_TABLE_NAME;
 
+    -- NOTE: this logic assumes there is exactly one DATE column in the crosswalk for the target table,
+    --       and that this column represents the royalty date for the orders.
     SELECT RAW_COLUMN_NAME, TARGET_COLUMN_NAME
     INTO   :v_date_col_raw, :v_date_col_target
     FROM   BOOKS.CONFIG.CROSSWALK

@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS BOOKS.KDP.KENP (
     AUDIBLE_ASIN              VARCHAR(25),
     MARKETPLACE               VARCHAR(250),
     KENP                      NUMBER(38,0),
+    
     DP_RUN_ID                 VARCHAR,
     DP_SOURCE_FILE_NAME       VARCHAR,
     DP_SOURCE_FILE_ROW_NUMBER INT,
