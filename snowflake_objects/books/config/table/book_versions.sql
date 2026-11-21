@@ -135,9 +135,7 @@ VALUES
 (15,'9798245627625', 'ISBN', $$NUR EIN HEILMITTEL: FBI & CDC Thrillerserie$$, 'Print', 'DE'),
 (4,'9798196807183', 'ISBN', $$LA SOMBRA DE LA DUDA: Las investigaciones de Victoria Heslin 4$$, 'Print', 'ES'),
 (7,'B0H2SC9P23', 'ASIN', $$LOS CRÍMENES DE LA EXPIACIÓN: Las investigaciones de Victoria Heslin 7$$, 'eBook', 'ES'),
-(9,'B0H31K1FT8', 'ASIN', $$EL MAL VECINO: Las inves 9tigaciones de Victoria Heslin$$, 'eBook', 'ES'),
 (13,'9798181059092', 'ISBN', $$L'INTERNA: Serie Brooke Walton 3$$, 'Print', 'IT'),
-(17,'9798199576116', 'ISBN', $$QUAND ELLE S'EST ÉCHAPPÉE: Un Thriller$$, 'Print', 'FR'),
 (11,'B0H4S5SJYT', 'ASIN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'eBook', 'IT'),
 (10,'B0H34V91WR', 'ASIN', $$MENTIRAS EN LA NIEVE: Las investigaciones de Victoria Heslin 10$$, 'eBook', 'ES'),
 (2,'9798196280580', 'ISBN', $$NIÑAS PERFECTAS: Las investigaciones de Victoria Heslin 2$$, 'Print', 'ES'),
@@ -154,8 +152,35 @@ VALUES
 (8,'B0H2WDGB6Y', 'ASIN', $$LOS ENTERRADOS: Las investigaciones de Victoria Heslin 8$$, 'eBook', 'ES'),
 (6,'9798197129116', 'ISBN', $$DESAPARECIDA EN VACACIONES: Las investigaciones de Victoria Heslin 6$$, 'Print', 'ES'),
 (11,'9798181018693', 'ISBN', $$LA STUDENTESSA PERFETTA: I Segreti di Brooke Walton 1$$, 'Print', 'IT'),
-(19,'B0H1F1GSDW', 'ASIN', $$L'ULTIMO POSTO: UN THRILLER PSICOLOGICO$$, 'eBook', 'IT')
+(19,'B0H1F1GSDW', 'ASIN', $$L'ULTIMO POSTO: UN THRILLER PSICOLOGICO$$, 'eBook', 'IT'),
 
+(3,'9781954447042', 'ISBN', $$When They Find Us$$, 'Print', 'EN'),
+(6,'9781954447233', 'ISBN', $$Vanished On Vacation$$, 'Print', 'EN'),
+(24,'9781954447578', 'ISBN', $$SOMEONE HAS TO CONFESS$$, 'Print', 'EN'),
+(25,'9781954447585', 'ISBN', $$Under The Tree: A Christmas Thriller$$, 'Print', 'EN'),
+(25,'9798140171612', 'ISBN', $$Sous le sapin: Un thriller de Noël$$, 'Print', 'FR'),
+(25,'9798166102973', 'ISBN', $$SOTTO L’ALBERO: Un thriller di Natale$$, 'Print', 'IT'),
+(24,'9798173274939', 'ISBN', $$ALGUIEN TIENE QUE CONFESAR$$, 'Print', 'ES'),
+(1,'9798174125261', 'ISBN', $$DE GETALLENMOORDENAAR: De Onderzoeken van Victoria Heslin$$, 'Print', 'NL'),
+(2,'9798174323742', 'ISBN', $$LIEVE KLEINE MEISJES: De Onderzoeken van Victoria Heslin$$, 'Print', 'NL'),
+(3,'9798174833067', 'ISBN', $$ALS ZE ONS VINDEN$$, 'Print', 'NL'),
+(4,'9798176602227', 'ISBN', $$EEN VLEUGJE TWIJFEL$$, 'Print', 'NL'),
+(19,'9798186523932', 'ISBN', $$L'ULTIMO POSTO: UN THRILLER PSICOLOGICO$$, 'Print', 'IT'),
+(10,'9798187157358', 'ISBN', $$LÜGEN IM SCHNEE$$, 'Print', 'DE'),
+(19,'9798187715527', 'ISBN', $$LE DERNIER SIÈGE: UN THRILLER PSYCHOLOGIQUE$$, 'Print', 'FR'),
+(24,'9798189890949', 'ISBN', $$QUALCUNO DEVE CONFESSARE: Le indagini di Victoria Heslin$$, 'Print', 'IT'),
+(24,'9798191801360', 'ISBN', $$L'UN D'EUX DOIT AVOUER: Les Enquêtes de Victoria Heslin$$, 'Print', 'FR'),
+(19,'B0H8FRNM18', 'ISBN', $$LE DERNIER SIÈGE: UN THRILLER PSYCHOLOGIQUE$$, 'eBook', 'FR'),
+(10,'B0H8QM31DZ', 'ASIN', $$LÜGEN IM SCHNEE$$, 'eBook', 'DE'),
+(24,'B0HC7C82S3', 'ASIN', $$QUALCUNO DEVE CONFESSARE: Le indagini di Victoria Heslin$$, 'eBook', 'IT'),
+(24,'B0HGZN7Q13', 'ASIN', $$SOMEONE HAS TO CONFESS$$, 'eBook', 'EN'),
+(24,'B0HJDQ8S5D', 'ASIN', $$ALGUIEN TIENE QUE CONFESAR$$, 'eBook', 'ES'),
+(24,'B0HLZWXZRT', 'ASIN', $$L'UN D'EUX DOIT AVOUER: Les Enquêtes de Victoria Heslin$$, 'eBook', 'FR'),
+(25,'B0HPPG5LY8', 'ASIN', $$Under The Tree: A Christmas Thriller$$, 'eBook', 'EN'),
+(25,'B0HPTYYX9S', 'ASIN', $$SOTTO L’ALBERO: Un thriller di Natale$$, 'eBook', 'IT'),
+(25,'B0HQK3KBDX', 'ASIN', $$Sous le sapin: Un thriller de Noël$$, 'eBook', 'FR'),
+(25, 'B0HQZV2H57', 'ASIN', $$BAJO EL ÁRBOL: Un thriller navideño$$, 'eBook', 'ES'),
+(25, 'B0HR6YR8QD', 'ASIN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'eBook', 'DE')
 ;
 
 
@@ -164,3 +189,6 @@ UPDATE BOOKS.CONFIG.BOOK_VERSIONS
     FROM BOOKS.CONFIG.BOOKS LU
     WHERE BOOK_VERSIONS.BOOK_SID = LU.BOOK_SID
     ;
+
+
+select COUNT(*), COUNT(DISTINCT BOOK_VERSION_UNIQUE_ID), COUNT(DISTINCT BOOK_VERSION_SID) from CONFIG.BOOK_VERSIONS;

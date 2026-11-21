@@ -25,6 +25,7 @@ VALUES
 (8,  'The Ones They Buried', 'Victoria', 8, FALSE),
 (9,  'The Bad Neighbor', 'Victoria', 9, FALSE),
 (10, 'Lies in the Snow', 'Victoria', 10, FALSE),
+(24, 'Someone Has to Confess', 'Victoria', 11, FALSE),
 
 
 -- 3 Brooke Walton
@@ -46,7 +47,10 @@ VALUES
 (20, 'Brooke Walton Box Set: Books 1-3', 'Brooke', NULL, TRUE),
 (21, 'Agent Victoria Heslin Series: Books 1-3', 'Victoria', NULL, TRUE),
 (22, 'FBI & CDC Thriller Series Books 1-3', 'FBI & CDC', NULL, TRUE),
-(23, 'Everett Series: Books 1-2', 'Brooke', NULL, TRUE)
+(23, 'Everett Series: Books 1-2', 'Brooke', NULL, TRUE),
+
+-- New adds:
+(25, 'Under The Tree: A Christmas Thriller', NULL, NULL, FALSE)
 ;
 
 
