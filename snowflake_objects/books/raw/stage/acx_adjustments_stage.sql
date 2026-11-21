@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.ACX_ADJUSTMENTS_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/acx/csv_stage/adjustments/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.ACX_ADJUSTMENTS_STAGE;
