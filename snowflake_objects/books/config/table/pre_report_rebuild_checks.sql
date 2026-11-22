@@ -239,5 +239,42 @@ FROM INAUD.ROYALTY_REPORT_ALL_TABS
 WHERE NVL(ROYALTY_PAYABLE_CURRENCY, '') <> 'USD'
 $$,
     TRUE
+),
+
+(
+    11, 'SPOTIFY_BOOK_VERSIONS',
+    'All ISBN values across SPOT.ROYALTY_REPORT_ALL_TABS have corresponding entries in CONFIG.BOOK_VERSIONS.',
+    'Unmatched rows would show up in reports with no book, version type or language.',
+
+$$
+WITH VERSIONS AS (
+    SELECT 
+        DISPLAY_NUMBER, 
+        TITLE
+    FROM SPOT.ROYALTY_REPORT_ALL_TABS I 
+    LEFT JOIN CONFIG.BOOK_VERSIONS BV ON I.DISPLAY_NUMBER = BV.BOOK_VERSION_UNIQUE_ID
+    WHERE BV.BOOK_VERSION_UNIQUE_ID IS NULL
+    GROUP BY ALL 
+)
+SELECT
+    COUNT(*) = 0 AS PASS_TEST
+FROM VERSIONS
+;
+$$,
+
+    TRUE
+),
+
+(
+    12, 'SPOTIFY_CURRENCY_ASSURANCE',
+    'All currencies used in the Spotify royalty reports is USD',
+    'We are assuming that all royalties are reported in USD, if this assumption changes, we need to know.',
+$$
+SELECT 
+    COUNT(*) = 0 AS PASS_TEST
+FROM SPOT.ROYALTY_REPORT_ALL_TABS
+WHERE NVL(ROYALTY_PAYABLE_CURRENCY, '') <> 'USD'
+$$,
+    TRUE
 )
 ;

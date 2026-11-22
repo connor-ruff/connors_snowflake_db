@@ -222,7 +222,25 @@ VALUES
 (10, '9781954447455', 'ISBN', $$LIES IN THE SNOW$$, 'Audio', 'EN'),
 (19, '9781954447554', 'ISBN', $$Last Seat, The$$, 'Audio', 'EN'),
 (2, '9798260818831', 'ISBN', $$Pretty Little Girls$$, 'Audio', 'EN'),
-(1, '9798260837054', 'ISBN', $$Numbers Killer, The$$, 'Audio', 'EN')
+(1, '9798260837054', 'ISBN', $$Numbers Killer, The$$, 'Audio', 'EN'),
+
+(8, 'CD1266808', 'SPOTIFY-DISPLAY-NUM', $$Ones They Buried, The$$, 'Audio', 'EN'),
+(15, 'CD2740978', 'SPOTIFY-DISPLAY-NUM', $$Only One Cure$$, 'Audio', 'EN'),
+(4, 'CD2741462', 'SPOTIFY-DISPLAY-NUM', $$Ripple of Doubt$$, 'Audio', 'EN'),
+(16, 'CD3178421', 'SPOTIFY-DISPLAY-NUM', $$Only One Wave$$, 'Audio', 'EN'),
+(5, 'CD3553678', 'SPOTIFY-DISPLAY-NUM', $$Groom Went Missing, The$$, 'Audio', 'EN'),
+(6, 'CD4071305', 'SPOTIFY-DISPLAY-NUM', $$Vanished on Vacation$$, 'Audio', 'EN'),
+(7, 'CD4707074', 'SPOTIFY-DISPLAY-NUM', $$Atonement Murders, The$$, 'Audio', 'EN'),
+(9, 'CD5092900', 'SPOTIFY-DISPLAY-NUM', $$Bad Neighbor, The$$, 'Audio', 'EN'),
+(17, 'CD5275075', 'SPOTIFY-DISPLAY-NUM', $$When She Escaped$$, 'Audio', 'EN'),
+(10, 'CD5417765', 'SPOTIFY-DISPLAY-NUM', $$LIES IN THE SNOW$$, 'Audio', 'EN'),
+(2, 'CD5482047', 'SPOTIFY-DISPLAY-NUM', $$Pretty Little Girls$$, 'Audio', 'EN'),
+(1, 'CD5482048', 'SPOTIFY-DISPLAY-NUM', $$Numbers Killer, The$$, 'Audio', 'EN'),
+(19, 'CD5541424', 'SPOTIFY-DISPLAY-NUM', $$Last Seat, The$$, 'Audio', 'EN'),
+(11, 'CD5574645', 'SPOTIFY-DISPLAY-NUM', $$Everett$$, 'Audio', 'EN'),
+(13, 'CD5574652', 'SPOTIFY-DISPLAY-NUM', $$Intern, The$$, 'Audio', 'EN'),
+(12, 'CD5574653', 'SPOTIFY-DISPLAY-NUM', $$Rothaker$$, 'Audio', 'EN'),
+(14, 'CD5574654', 'SPOTIFY-DISPLAY-NUM', $$Only Wrong Once$$, 'Audio', 'EN')
 ;
 
 
