@@ -24,9 +24,11 @@ CREATE SCHEMA IF NOT EXISTS BOOKS.CONFIG;
 CREATE SCHEMA IF NOT EXISTS BOOKS.KDP;
 CREATE SCHEMA IF NOT EXISTS BOOKS.RPT;
 CREATE SCHEMA IF NOT EXISTS BOOKS.ACX;
+CREATE SCHEMA IF NOT EXISTS BOOKS.INAUD;
 
 
 
+USE ROLE ACCOUNTADMIN;
 -- =============================================================================
 -- grant_ownership.sql
 -- Transfers ownership of ALL existing objects and ALL future objects of the
@@ -42,7 +44,7 @@ DECLARE
   -- ---------------------------- CONFIG ------------------------------------
   v_role          VARCHAR DEFAULT 'BOOKS_ADMIN';   -- role that will own everything
   v_database      VARCHAR DEFAULT 'BOOKS';
-  v_schemas       ARRAY   DEFAULT ARRAY_CONSTRUCT('RAW', 'CONFIG', 'KDP', 'RPT', 'ACX');
+  v_schemas       ARRAY   DEFAULT ARRAY_CONSTRUCT('RAW', 'CONFIG', 'KDP', 'RPT', 'ACX', 'INAUD');
   v_object_types  ARRAY   DEFAULT ARRAY_CONSTRUCT('TABLE', 'VIEW', 'SEQUENCE', 'STAGE', 'FILE FORMAT', 'PROCEDURE', 'FUNCTION', 'TASK');
   
   -- What to do with existing privileges on current objects:
