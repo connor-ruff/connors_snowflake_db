@@ -152,8 +152,57 @@ INAUD_SALES_DAILY AS (
     JOIN CONFIG.CALENDAR C 
         ON C.CALENDAR_DATE >= DATE_TRUNC('MONTH', A.ROYALTY_MONTH)
        AND C.CALENDAR_DATE <= LAST_DAY(A.ROYALTY_MONTH, 'MONTH')
-)
+),
 
+-- Spotify sales are aggregated quarterly, so grouping by quarter here and then redistributing 
+-- equally to each day in the quarter is the approach to take
+SPOT_SALES_QUARTERLY AS (
+    SELECT 
+        B.BOOK_SID,
+        BV.BOOK_VERSION_SID,
+        B.TITLE AS BOOK_TITLE,
+        'SPOTIFY' AS SALE_SOURCE,
+        BV.VERSION_TYPE,
+        BV.VERSION_LANGUAGE,
+        I.SALE_TERRITORY AS MARKETPLACE,
+        DATE_TRUNC('QUARTER', I.DP_SOURCE_FILE_MONTH) AS ROYALTY_QUARTER,
+        SUM(ROYALTY_PAYABLE) AS ROYALTY_IN_USD,
+        SUM(SALES_QTY) AS NET_UNITS_SOLD,
+        NULL AS PAGE_READS
+    FROM SPOT.ROYALTY_REPORT_ALL_TABS I 
+    LEFT JOIN CONFIG.BOOK_VERSIONS BV ON I.DISPLAY_NUMBER = BV.BOOK_VERSION_UNIQUE_ID
+    LEFT JOIN CONFIG.BOOKS B ON BV.BOOK_SID = B.BOOK_SID
+    GROUP BY ALL 
+),
+
+-- Spread each quarter's sales evenly across the days of the quarter, but never onto a future date.
+-- For a completed quarter that is every day in the quarter; for the current (in-progress) quarter it is
+-- quarter-start through today, so the divisor is the number of days elapsed rather than days in the quarter.
+SPOT_SALES_DAILY AS (
+    SELECT
+        Q.BOOK_SID,
+        Q.BOOK_VERSION_SID,
+        Q.BOOK_TITLE,
+        Q.SALE_SOURCE,
+        Q.VERSION_TYPE,
+        Q.VERSION_LANGUAGE,
+        Q.MARKETPLACE,
+        C.CALENDAR_DATE AS ROYALTY_DATE,
+        ROUND(Q.ROYALTY_IN_USD / Q.ALLOCATION_DAYS, 10) AS ROYALTY_IN_USD,
+        ROUND(Q.NET_UNITS_SOLD / Q.ALLOCATION_DAYS, 10) AS NET_UNITS_SOLD,
+        NULL AS PAGE_READS,
+        CURRENT_TIMESTAMP() AS LAST_MATERIALIZED_DT
+    FROM (
+        SELECT
+            S.*,
+            LEAST(LAST_DAY(S.ROYALTY_QUARTER, 'QUARTER'), CURRENT_DATE()) AS ALLOCATION_END_DATE,
+            DATEDIFF('DAY', S.ROYALTY_QUARTER, LEAST(LAST_DAY(S.ROYALTY_QUARTER, 'QUARTER'), CURRENT_DATE())) + 1 AS ALLOCATION_DAYS
+        FROM SPOT_SALES_QUARTERLY S
+    ) Q
+    JOIN CONFIG.CALENDAR C
+        ON C.CALENDAR_DATE >= Q.ROYALTY_QUARTER
+       AND C.CALENDAR_DATE <= Q.ALLOCATION_END_DATE
+)
 
 -- KDP SALES
 SELECT * FROM KDP_SALES
@@ -172,6 +221,11 @@ UNION ALL
 
 -- INAUD SALES DAILY
 SELECT * FROM INAUD_SALES_DAILY
+
+UNION ALL
+
+-- SPOT SALES DAILY
+SELECT * FROM SPOT_SALES_DAILY
 ;
 
 
