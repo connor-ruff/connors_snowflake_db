@@ -206,7 +206,23 @@ VALUES
 (12, 'ACX-BK_ACX0_511031', 'ACX-ROYALTY-EARNER', $$Rothaker: A Dark Psychological Suspense Novel (Brooke Walton, Book 2) (Unabridged)$$, 'Audio', 'EN'),
 (13, 'ACX-BK_ACX0_511035', 'ACX-ROYALTY-EARNER', $$The Intern: A Dark Thriller (Brooke Walton, Book 3) (Unabridged)$$, 'Audio', 'EN'),
 (20, 'ACX-BK_ACX0_511229', 'ACX-ROYALTY-EARNER', $$Brooke Walton : Series 1-3 (Unabridged)$$, 'Audio', 'EN'),
-(24, 'ACX-BK_ACX0_537121', 'ACX-ROYALTY-EARNER', $$SOMEONE HAS TO CONFESS$$, 'Audio', 'EN')
+(24, 'ACX-BK_ACX0_537121', 'ACX-ROYALTY-EARNER', $$SOMEONE HAS TO CONFESS$$, 'Audio', 'EN'),
+
+(12, '9780466142759', 'ISBN', $$Rothaker$$, 'Audio', 'EN'),
+(11, '9780466411169', 'ISBN', $$Everett$$, 'Audio', 'EN'),
+(13, '9780466884338', 'ISBN', $$Intern, The$$, 'Audio', 'EN'),
+(14, '9780466982140', 'ISBN', $$Only Wrong Once$$, 'Audio', 'EN'),
+(15, '9781954447059', 'ISBN', $$Only One Cure$$, 'Audio', 'EN'),
+(4, '9781954447066', 'ISBN', $$Ripple of Doubt$$, 'Audio', 'EN'),
+(16, '9781954447141', 'ISBN', $$Only One Wave$$, 'Audio', 'EN'),
+(5, '9781954447219', 'ISBN', $$Groom Went Missing, The$$, 'Audio', 'EN'),
+(7, '9781954447271', 'ISBN', $$Atonement Murders, The$$, 'Audio', 'EN'),
+(9, '9781954447332', 'ISBN', $$Bad Neighbor, The$$, 'Audio', 'EN'),
+(17, '9781954447394', 'ISBN', $$When She Escaped$$, 'Audio', 'EN'),
+(10, '9781954447455', 'ISBN', $$LIES IN THE SNOW$$, 'Audio', 'EN'),
+(19, '9781954447554', 'ISBN', $$Last Seat, The$$, 'Audio', 'EN'),
+(2, '9798260818831', 'ISBN', $$Pretty Little Girls$$, 'Audio', 'EN'),
+(1, '9798260837054', 'ISBN', $$Numbers Killer, The$$, 'Audio', 'EN')
 ;
 
 

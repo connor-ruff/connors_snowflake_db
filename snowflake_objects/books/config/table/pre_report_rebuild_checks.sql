@@ -202,4 +202,42 @@ WHERE BV.BOOK_VERSION_UNIQUE_ID IS NULL
 $$,
 
     TRUE
+),
+
+(
+    9, 'INAUDIO_BOOK_VERSIONS',
+    'All ISBN values across INAUD.ROYALTY_REPORT_ALL_TABS have corresponding entries in CONFIG.BOOK_VERSIONS.',
+    'Unmatched rows would show up in reports with no book, version type or language.',
+
+$$
+WITH VERSIONS AS (
+    SELECT 
+        ISBN, 
+        TITLE
+    FROM INAUD.ROYALTY_REPORT_ALL_TABS I 
+    LEFT JOIN CONFIG.BOOK_VERSIONS BV ON I.ISBN = BV.BOOK_VERSION_UNIQUE_ID
+    WHERE BV.BOOK_VERSION_UNIQUE_ID IS NULL
+    GROUP BY ALL 
 )
+SELECT
+    COUNT(*) = 0 AS PASS_TEST
+FROM VERSIONS
+;
+$$,
+
+    TRUE
+),
+
+(
+    10, 'INAUDIO_CURRENCY_ASSURANCE',
+    'All currencies used in the Inaudio royalty reports is USD',
+    'We are assuming that all royalties are reported in USD, if this assumption changes, we need to know.',
+$$
+SELECT 
+    COUNT(*) = 0 AS PASS_TEST
+FROM INAUD.ROYALTY_REPORT_ALL_TABS
+WHERE NVL(CURRENCY, '') <> 'USD'
+$$,
+    TRUE
+)
+;
