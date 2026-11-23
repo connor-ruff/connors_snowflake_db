@@ -35,17 +35,16 @@ BEGIN
     WHERE  TARGET_TABLE_NAME = :TARGET_TABLE_NAME;
 
     -- Create temporary table that includes DP_SOURCE_FILE_MONTH, parsed from the file name.
-    -- File names look like: .../retail/Jenifer Ruff - Digital Royalty - March 2026-retail.csv
-    --                       .../retail/Jenifer Ruff - Digital Royalty - August 2026-retail.csv
-    -- The month is the "<Month name> <YYYY>" after "Royalty - " (e.g. "March 2026"). It is parsed
-    -- as '01 March 2026' with the 'DD MMMM YYYY' format, so DP_SOURCE_FILE_MONTH is the 1st of that month.
+    -- File names look like: books/spot/monthly_listeners/csv_stage/monthly-20260201-00000-of-00001.csv
+    -- The 8-digit YYYYMMDD after "monthly-" is the 1st of the month AFTER the reporting month
+    -- (20260201 is the January file), so DP_SOURCE_FILE_MONTH = that date minus one month (2026-01-01).
     v_sql :=
 'CREATE OR REPLACE TEMPORARY TABLE TEMP_RAW AS
 SELECT *,
-       TRY_TO_DATE(
-           ''01 '' || REGEXP_SUBSTR(' || :v_source_file_name_col || ', ''Royalty - ([A-Za-z]+ [0-9]{4})-'', 1, 1, ''e'', 1),
-           ''DD MMMM YYYY''
-       ) AS DP_SOURCE_FILE_MONTH
+       DATEADD(MONTH, -1, TRY_TO_DATE(
+           REGEXP_SUBSTR(' || :v_source_file_name_col || ', ''monthly-([0-9]{8})-'', 1, 1, ''e'', 1),
+           ''YYYYMMDD''
+       )) AS DP_SOURCE_FILE_MONTH
 FROM BOOKS.' || :v_raw_table;
     EXECUTE IMMEDIATE :v_sql;
 
@@ -55,8 +54,8 @@ FROM BOOKS.' || :v_raw_table;
         RETURN 'ERROR: Could not derive DP_SOURCE_FILE_MONTH for ' || :v_unparsed::VARCHAR || ' row(s) in BOOKS.' || :v_raw_table || '. No changes made.';
     END IF;
 
-    -- Delete existing rows in the target table for the given file month date
-    -- NOTE: all files for a month land in the same table, so stage them together.
+    -- Delete existing rows in the target table for the given file month
+    -- NOTE: reruns replace rows for each file month present in the raw table.
     v_sql :=
     'DELETE FROM BOOKS.' || :TARGET_TABLE_NAME || '
 WHERE DP_SOURCE_FILE_MONTH IN (
