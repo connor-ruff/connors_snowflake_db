@@ -34,7 +34,8 @@ try {
                 OBJECT_CONSTRUCT_KEEP_NULL(
                     'rank', C.ADJUSTED_SLOP_CS_RANK,
                     'team', C.TEAM,
-                    'slopcs_score', C.ADJUSTED_SLOP_CS_SCORE
+                    'slopcs_score', C.ADJUSTED_SLOP_CS_SCORE,
+                    'last_week_rank', C.PREVIOUS_ADJUSTED_SLOP_CS_RANK
                 )
             ) WITHIN GROUP (ORDER BY C.ADJUSTED_SLOP_CS_RANK, C.TEAM)
         )
