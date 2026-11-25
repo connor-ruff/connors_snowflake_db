@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE STG.PUBLISH_SLOPCS()
+CREATE OR REPLACE PROCEDURE CONFIG.PUBLISH_SLOPCS()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
@@ -51,7 +51,7 @@ try {
 
     for (var i = 0; i < targets.length; i++) {
         sql_command = `
-            COPY INTO @STG.SLOPCS_SITE_STAGE/${targets[i]}
+            COPY INTO @CONFIG.SLOPCS_SITE_STAGE/${targets[i]}
             FROM (${payload_query})
             FILE_FORMAT = (TYPE = JSON COMPRESSION = NONE)
             SINGLE = TRUE

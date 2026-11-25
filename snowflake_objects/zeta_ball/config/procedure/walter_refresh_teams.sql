@@ -1,19 +1,20 @@
-CREATE OR REPLACE PROCEDURE STG.REFRESH_TEAMS_WALTER()
+CREATE OR REPLACE PROCEDURE CONFIG.WALTER_REFRESH_TEAMS()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
 $$
 try {
+    
 
     sql_command = `
-        INSERT INTO STG.AUDIT (RESULT_MSG)
+        INSERT INTO CONFIG.AUDIT (RESULT_MSG)
         VALUES ('STARTING TEAM NAMES REFRESH PROCESS - WALTER API');
     `;
     var stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        SELECT AUDIT_SID FROM STG.AUDIT
+        SELECT AUDIT_SID FROM CONFIG.AUDIT
         ORDER BY START_DT DESC 
         LIMIT 1;
     `;
@@ -35,7 +36,7 @@ try {
     // Call external function: REFRESH_TYPE_ID 2 = teams (input 1 = season)
     var REFRESH_TYPE_TEAMS = 2;
     sql_command = `
-        SELECT STG.ZETA_BALL_WALTER_REFRESH_LAMBDA_TRIGGER(
+        SELECT CONFIG.WALTER_ZETA_BALL_REFRESH_LAMBDA_TRIGGER(
             ${REFRESH_TYPE_TEAMS}, '${current_season}', NULL, NULL, NULL, NULL
         ) AS RESPONSE;
     `;
@@ -55,13 +56,13 @@ try {
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.TEAMS_WALTER_RAW;
+        TRUNCATE TABLE RAW.WALTER_TEAMS_FULL_JSON;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        COPY INTO STG.TEAMS_WALTER_RAW (
+        COPY INTO RAW.WALTER_TEAMS_FULL_JSON (
             SEASON,
             FULL_OBJECT,
             SOURCE_FILE_NAME,
@@ -76,8 +77,8 @@ try {
                 METADATA$FILENAME AS SOURCE_FILE_NAME,
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
-            FROM @STG.ZETA_BALL_WALTER_STAGE/
-            (FILE_FORMAT => 'STG.JSON_FF',
+            FROM @RAW.WALTER_ZETA_BALL_STAGE/
+            (FILE_FORMAT => 'CONFIG.JSON_FF',
             PATTERN => '.*teams/season_${current_season}[.]json$')
         )
         FORCE = TRUE;
@@ -91,7 +92,7 @@ try {
         SELECT
             (SELECT COUNT(*) FROM DWH.TEAMS WHERE LEAGUE_START_YEAR = ${current_season}) AS EXPECTED_TEAMS,
             (SELECT COUNT(*)
-                FROM STG.TEAMS_WALTER_RAW R,
+                FROM RAW.WALTER_TEAMS_FULL_JSON R,
                 LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) F,
                 DWH.TEAMS T
                 WHERE T.LEAGUE_START_YEAR = R.SEASON
@@ -116,7 +117,7 @@ try {
                 R.SEASON,
                 COALESCE(F.VALUE:team_id::INT, SPLIT_PART(F.VALUE:team_key::VARCHAR, '.t.', 2)::INT) AS TEAM_ID,
                 F.VALUE:team::VARCHAR AS TEAM_NAME
-            FROM STG.TEAMS_WALTER_RAW R,
+            FROM RAW.WALTER_TEAMS_FULL_JSON R,
             LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) F
         ) S
             ON T.LEAGUE_START_YEAR = S.SEASON
@@ -139,7 +140,7 @@ try {
 
 
     sql_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET 
             SUCCESS_FLG = TRUE,
             RESULT_MSG = ?,
@@ -175,7 +176,7 @@ try {
     error_stmt.execute();
 
     var log_error_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET 
             SUCCESS_FLG = FALSE,
             RESULT_MSG = ?,

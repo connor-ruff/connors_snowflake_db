@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE STG.REFRESH_ROSTERS_WALTER()
+CREATE OR REPLACE PROCEDURE CONFIG.WALTER_REFRESH_ROSTERS()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
@@ -6,14 +6,14 @@ $$
 try {
 
     sql_command = `
-        INSERT INTO STG.AUDIT (RESULT_MSG)
+        INSERT INTO CONFIG.AUDIT (RESULT_MSG)
         VALUES ('STARTING ROSTERS REFRESH PROCESS - WALTER API');
     `;
     var stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        SELECT AUDIT_SID FROM STG.AUDIT
+        SELECT AUDIT_SID FROM CONFIG.AUDIT
         ORDER BY START_DT DESC 
         LIMIT 1;
     `;
@@ -35,7 +35,7 @@ try {
     // Call external function: REFRESH_TYPE_ID 3 = rosters (no inputs, always current season)
     var REFRESH_TYPE_ROSTERS = 3;
     sql_command = `
-        SELECT STG.ZETA_BALL_WALTER_REFRESH_LAMBDA_TRIGGER(
+        SELECT CONFIG.WALTER_ZETA_BALL_REFRESH_LAMBDA_TRIGGER(
             ${REFRESH_TYPE_ROSTERS}, NULL, NULL, NULL, NULL, NULL
         ) AS RESPONSE;
     `;
@@ -55,13 +55,13 @@ try {
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.ROSTERS_WALTER_RAW;
+        TRUNCATE TABLE RAW.WALTER_ROSTERS_FULL_JSON;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        COPY INTO STG.ROSTERS_WALTER_RAW (
+        COPY INTO RAW.WALTER_ROSTERS_FULL_JSON (
             FULL_OBJECT,
             SOURCE_FILE_NAME,
             LOAD_DT
@@ -73,7 +73,7 @@ try {
                 METADATA$FILENAME AS SOURCE_FILE_NAME,
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
-            FROM @STG.ZETA_BALL_WALTER_STAGE/
+            FROM @RAW.WALTER_ZETA_BALL_STAGE/
             (FILE_FORMAT => 'STG.JSON_FF',
             PATTERN => '.*rosters/current[.]json$')
         )
@@ -101,7 +101,7 @@ try {
         SELECT 
                 SOURCE_FILE_NAME, F.VALUE AS MANAGER_OBJ, 
                 F.VALUE:team_key AS YAHOO_TEAM_KEY
-            FROM STG.ROSTERS_WALTER_RAW,
+            FROM RAW.WALTER_ROSTERS_FULL_JSON,
             LATERAL FLATTEN(input => FULL_OBJECT:data) AS F
         )
         SELECT 
@@ -127,7 +127,7 @@ try {
 
 
     sql_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET 
             SUCCESS_FLG = TRUE,
             RESULT_MSG = ?,
@@ -163,7 +163,7 @@ try {
     error_stmt.execute();
 
     var log_error_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET 
             SUCCESS_FLG = FALSE,
             RESULT_MSG = ?,

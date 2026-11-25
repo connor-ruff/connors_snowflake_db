@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE STG.REFRESH_WEEKLY_WALTER()
+CREATE OR REPLACE PROCEDURE CONFIG.WALTER_REFRESH_WEEKLY_MATCHUPS()
 RETURNS STRING
 LANGUAGE JAVASCRIPT
 AS
@@ -6,14 +6,14 @@ $$
 try {
 
     sql_command = `
-        INSERT INTO STG.AUDIT (RESULT_MSG)
+        INSERT INTO CONFIG.AUDIT (RESULT_MSG)
         VALUES ('STARTING WEEKLY REFRESH PROCESS - WALTER API');
     `;
     var stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        SELECT AUDIT_SID FROM STG.AUDIT
+        SELECT AUDIT_SID FROM CONFIG.AUDIT
         ORDER BY START_DT DESC 
         LIMIT 1;
     `;
@@ -22,32 +22,6 @@ try {
     result_set.next();
     var audit_sid = result_set.getColumnValue('AUDIT_SID');
 
-    // Refresh team names first. This runs (and commits) its own transaction before ours begins,
-    // and it catches its own errors and returns them as a string, so check the return value.
-    sql_command = `
-        CALL STG.REFRESH_TEAMS_WALTER();
-    `;
-    stmt = snowflake.createStatement({sqlText: sql_command});
-    result_set = stmt.execute();
-    result_set.next();
-    var teams_response = result_set.getColumnValue(1);
-
-    if (teams_response !== 'SUCCESS') {
-        throw new Error('Team names refresh failed: ' + teams_response);
-    }
-
-    // Refresh current rosters 
-    sql_command = `
-        CALL STG.REFRESH_ROSTERS_WALTER();
-    `;
-    stmt = snowflake.createStatement({sqlText: sql_command});
-    result_set = stmt.execute();
-    result_set.next();
-    var rosters_response = result_set.getColumnValue(1);
-
-    if (rosters_response !== 'SUCCESS') {
-        throw new Error('Current rosters refresh failed: ' + rosters_response);
-    }
 
     // Get current season and week number
     var current_season;
@@ -71,7 +45,7 @@ try {
     // Call external function: REFRESH_TYPE_ID 1 = matchups (input 1 = season, input 2 = week)
     var REFRESH_TYPE_MATCHUPS = 1;
     sql_command = `
-        SELECT STG.ZETA_BALL_WALTER_REFRESH_LAMBDA_TRIGGER(
+        SELECT CONFIG.WALTER_ZETA_BALL_REFRESH_LAMBDA_TRIGGER(
             ${REFRESH_TYPE_MATCHUPS}, '${current_season}', '${current_week_number}', NULL, NULL, NULL
         ) AS RESPONSE;
     `;
@@ -91,13 +65,13 @@ try {
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.WEEKLY_MATCHUPS_WALTER_RAW;
+        TRUNCATE TABLE RAW.WALTER_WEEKLY_MATCHUPS_FULL_JSON;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     sql_command = `
-        COPY INTO STG.WEEKLY_MATCHUPS_WALTER_RAW (
+        COPY INTO RAW.WALTER_WEEKLY_MATCHUPS_FULL_JSON (
             SEASON,
             WEEK_NUMBER,
             FULL_OBJECT,
@@ -114,7 +88,7 @@ try {
                 METADATA$FILENAME AS SOURCE_FILE_NAME,
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
-            FROM @STG.ZETA_BALL_WALTER_STAGE/
+            FROM @RAW.WALTER_ZETA_BALL_STAGE/
             (FILE_FORMAT => 'STG.JSON_FF',
             PATTERN => '.*matchups/season_${current_season}/week_${current_week_number}[.]json$')
         )
@@ -124,14 +98,14 @@ try {
     stmt.execute();
 
     sql_command = `
-        TRUNCATE TABLE STG.WEEKLY_MATCHUP_CATEGORY_STATS_WALTER;
+        TRUNCATE TABLE RAW.WALTER_WEEKLY_MATCHUP_CATEGORY_STATS;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
     // One row per team per category: matchup -> its 2 teams -> its 9 categories (values[i] belongs to teams[i])
     sql_command = `
-        INSERT INTO STG.WEEKLY_MATCHUP_CATEGORY_STATS_WALTER (
+        INSERT INTO RAW.WALTER_WEEKLY_MATCHUP_CATEGORY_STATS (
             SEASON,
             WEEK_NUMBER,
             MANAGER,
@@ -156,7 +130,7 @@ try {
 
             R.SOURCE_FILE_NAME,
             R.LOAD_DT
-        FROM STG.WEEKLY_MATCHUPS_WALTER_RAW R,
+        FROM RAW.WALTER_WEEKLY_MATCHUPS_FULL_JSON R,
         LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) M,
         LATERAL FLATTEN(INPUT => M.VALUE:teams) T,
         LATERAL FLATTEN(INPUT => M.VALUE:categories) C
@@ -208,7 +182,7 @@ try {
             MAX(CASE WHEN S.CATEGORY = 'tov' THEN S.CATEGORY_VALUE END)::NUMBER(38,0) AS TOTAL_TOS,
 
             CURRENT_TIMESTAMP() AS LOAD_DT
-        FROM STG.WEEKLY_MATCHUP_CATEGORY_STATS_WALTER S
+        FROM RAW.WALTER_WEEKLY_MATCHUP_CATEGORY_STATS S
         INNER JOIN DWH.TEAMS T
             ON T.LEAGUE_START_YEAR = S.SEASON
             AND T.YAHOO_TEAM_ID = S.TEAM_ID
@@ -327,22 +301,9 @@ try {
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
-    // Publish to the public website. Data is already committed, so a failure here
-    // fails the run (and emails) but leaves the week's data loaded.
-    sql_command = `
-        CALL STG.PUBLISH_SLOPCS();
-    `;
-    stmt = snowflake.createStatement({sqlText: sql_command});
-    result_set = stmt.execute();
-    result_set.next();
-    var publish_response = result_set.getColumnValue(1);
-
-    if (publish_response !== 'SUCCESS') {
-        throw new Error('Data loaded, but publishing SlopCS website failed: ' + publish_response);
-    }
 
     sql_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET 
             SUCCESS_FLG = TRUE,
             RESULT_MSG = 'WEEKLY REFRESH PROCESS COMPLETED SUCCESSFULLY',
@@ -375,7 +336,7 @@ try {
     error_stmt.execute();
 
     var log_error_command = `
-        UPDATE STG.AUDIT
+        UPDATE CONFIG.AUDIT
         SET
             SUCCESS_FLG = FALSE,
             RESULT_MSG = ?,
