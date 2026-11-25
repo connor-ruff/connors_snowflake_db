@@ -74,7 +74,7 @@ try {
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
             FROM @RAW.WALTER_ZETA_BALL_STAGE/
-            (FILE_FORMAT => 'STG.JSON_FF',
+            (FILE_FORMAT => 'CONFIG.JSON_FF',
             PATTERN => '.*rosters/current[.]json$')
         )
         FORCE = TRUE;

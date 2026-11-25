@@ -89,7 +89,7 @@ try {
                 CURRENT_TIMESTAMP() AS LOAD_DT
 
             FROM @RAW.WALTER_ZETA_BALL_STAGE/
-            (FILE_FORMAT => 'STG.JSON_FF',
+            (FILE_FORMAT => 'CONFIG.JSON_FF',
             PATTERN => '.*matchups/season_${current_season}/week_${current_week_number}[.]json$')
         )
         FORCE = TRUE;

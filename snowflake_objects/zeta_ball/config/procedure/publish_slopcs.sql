@@ -61,6 +61,17 @@ try {
         stmt.execute();
     }
 
+    var sql_command = `
+         CALL SYSTEM$SEND_EMAIL(
+                'BASIC_EMAIL_INTEGRATION',
+                'connorruff99@gmail.com',
+                'SUCCESS: Zeta Ball SlopCS Publish',
+                'The SlopCS publish process has completed successfully.'
+        );
+    `;
+    var email_stmt = snowflake.createStatement({sqlText: sql_command});
+    email_stmt.execute();
+
     return "SUCCESS";
 
 } catch (err) {
