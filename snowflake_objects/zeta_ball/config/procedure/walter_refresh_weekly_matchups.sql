@@ -30,7 +30,7 @@ try {
         SELECT 
             YEAR(MAX(WEEK_1_START_DATE)) AS CURRENT_SEASON, 
             DATEDIFF('WEEK', MAX(WEEK_1_START_DATE), CURRENT_DATE()) AS WEEK_DIFF
-        FROM DWH.LEAGUES;
+        FROM CONFIG.LEAGUES;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result_set = stmt.execute();
@@ -148,7 +148,7 @@ try {
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
-    // Walter's TEAM_ID is the Yahoo team id, so it joins to DWH.TEAMS on season + YAHOO_TEAM_ID
+    // Walter's TEAM_ID is the Yahoo team id, so it joins to CONFIG.TEAMS on season + YAHOO_TEAM_ID
     sql_command = `
         INSERT INTO DWH.WEEKLY_TEAM_TOTALS
         (
@@ -183,7 +183,7 @@ try {
 
             CURRENT_TIMESTAMP() AS LOAD_DT
         FROM RAW.WALTER_WEEKLY_MATCHUP_CATEGORY_STATS S
-        INNER JOIN DWH.TEAMS T
+        INNER JOIN CONFIG.TEAMS T
             ON T.LEAGUE_START_YEAR = S.SEASON
             AND T.YAHOO_TEAM_ID = S.TEAM_ID
         GROUP BY T.LEAGUE_START_YEAR, S.WEEK_NUMBER, T.TEAM_SID
@@ -195,7 +195,7 @@ try {
     // Every team in DWH.TEAMS for the season should have a row; otherwise an id failed to map
     sql_command = `
         SELECT
-            (SELECT COUNT(*) FROM DWH.TEAMS WHERE LEAGUE_START_YEAR = ${current_season}) AS EXPECTED_TEAMS,
+            (SELECT COUNT(*) FROM CONFIG.TEAMS WHERE LEAGUE_START_YEAR = ${current_season}) AS EXPECTED_TEAMS,
             (SELECT COUNT(*) FROM DWH.WEEKLY_TEAM_TOTALS
                 WHERE LEAGUE_START_YEAR = ${current_season} AND WEEK_NUMBER = ${current_week_number}) AS LOADED_TEAMS
         ;

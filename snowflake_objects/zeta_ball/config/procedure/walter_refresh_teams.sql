@@ -26,7 +26,7 @@ try {
     // Get current season
     sql_command = `
         SELECT YEAR(MAX(WEEK_1_START_DATE)) AS CURRENT_SEASON
-        FROM DWH.LEAGUES;
+        FROM CONFIG.LEAGUES;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result_set = stmt.execute();
@@ -86,15 +86,15 @@ try {
     stmt = snowflake.createStatement({sqlText: sql_command});
     stmt.execute();
 
-    // Walter's TEAM_ID is the Yahoo team id, so it joins to DWH.TEAMS on season + YAHOO_TEAM_ID.
+    // Walter's TEAM_ID is the Yahoo team id, so it joins to CONFIG.TEAMS on season + YAHOO_TEAM_ID.
     // Every team for the season should match; otherwise an id failed to map.
     sql_command = `
         SELECT
-            (SELECT COUNT(*) FROM DWH.TEAMS WHERE LEAGUE_START_YEAR = ${current_season}) AS EXPECTED_TEAMS,
+            (SELECT COUNT(*) FROM CONFIG.TEAMS WHERE LEAGUE_START_YEAR = ${current_season}) AS EXPECTED_TEAMS,
             (SELECT COUNT(*)
                 FROM RAW.WALTER_TEAMS_FULL_JSON R,
                 LATERAL FLATTEN(INPUT => R.FULL_OBJECT:data) F,
-                DWH.TEAMS T
+                CONFIG.TEAMS T
                 WHERE T.LEAGUE_START_YEAR = R.SEASON
                     AND T.YAHOO_TEAM_ID = COALESCE(F.VALUE:team_id::INT, SPLIT_PART(F.VALUE:team_key::VARCHAR, '.t.', 2)::INT)
             ) AS MATCHED_TEAMS
@@ -107,11 +107,11 @@ try {
     var matched_teams = result_set.getColumnValue('MATCHED_TEAMS');
 
     if (matched_teams !== expected_teams) {
-        throw new Error('Expected ' + expected_teams + ' teams in DWH.TEAMS but matched ' + matched_teams + ' from the API');
+        throw new Error('Expected ' + expected_teams + ' teams in CONFIG.TEAMS but matched ' + matched_teams + ' from the API');
     }
 
     sql_command = `
-        MERGE INTO DWH.TEAMS T
+        MERGE INTO CONFIG.TEAMS T
         USING (
             SELECT
                 R.SEASON,

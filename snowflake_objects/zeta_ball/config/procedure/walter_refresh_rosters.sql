@@ -25,7 +25,7 @@ try {
     // Get current season
     sql_command = `
         SELECT YEAR(MAX(WEEK_1_START_DATE)) AS CURRENT_SEASON
-        FROM DWH.LEAGUES;
+        FROM CONFIG.LEAGUES;
     `;
     stmt = snowflake.createStatement({sqlText: sql_command});
     result_set = stmt.execute();
