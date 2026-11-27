@@ -56,7 +56,7 @@ BEGIN
 
             ELSE '!!!ERROR!!!'
 
-            END, '\n'
+            END, ',\n'
 
         ) WITHIN GROUP (ORDER BY RAW_COLUMN_NUMBER, TARGET_COLUMN_NAME) AS INSERT_STATEMENT
 
