@@ -182,6 +182,8 @@ VALUES
 (25, 'B0HQZV2H57', 'ASIN', $$BAJO EL ÁRBOL: Un thriller navideño$$, 'eBook', 'ES'),
 (25, 'B0HR6YR8QD', 'ASIN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'eBook', 'DE'),
 (5, '9781954447196', 'ISBN', $$The Groom Went Missing$$, 'Print', 'EN'),
+(25,'9798141899904', 'ISBN', $$UNTER DEM TANNENBAUM: EIN WEIHNACHTSTHRILLER$$, 'Print', 'DE'),
+(25,'9798143070868', 'ISBN', $$Under The Tree: A Christmas Thriller$$, 'Print', 'EN'),
 
 (14, 'ACX-BK_ACX0_109794', 'ACX-ROYALTY-EARNER', $$Only Wrong Once: A Suspense Thriller (Unabridged)$$, 'Audio', 'EN'),
 (11, 'ACX-BK_ACX0_132819', 'ACX-ROYALTY-EARNER', $$Everett: A Dark Psychological Suspense Novel (Brooke Walton Series Book 1) (Unabridged)$$, 'Audio', 'EN'),
@@ -223,6 +225,7 @@ VALUES
 (19, '9781954447554', 'ISBN', $$Last Seat, The$$, 'Audio', 'EN'),
 (2, '9798260818831', 'ISBN', $$Pretty Little Girls$$, 'Audio', 'EN'),
 (1, '9798260837054', 'ISBN', $$Numbers Killer, The$$, 'Audio', 'EN'),
+(24, '9780466823139', 'ISBN', $$SOMEONE HAS TO CONFESS$$, 'Audio', 'EN'),
 
 (8, 'CD1266808', 'SPOTIFY-DISPLAY-NUM', $$Ones They Buried, The$$, 'Audio', 'EN'),
 (15, 'CD2740978', 'SPOTIFY-DISPLAY-NUM', $$Only One Cure$$, 'Audio', 'EN'),
