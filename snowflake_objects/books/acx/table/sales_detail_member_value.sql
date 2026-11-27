@@ -28,6 +28,6 @@ CREATE TABLE IF NOT EXISTS BOOKS.ACX.SALES_DETAIL_MEMBER_VALUE (
     DP_SOURCE_FILE_MONTH                 DATE,      -- First Date of the month of the earnings file
     DP_RUN_ID                            VARCHAR,
     DP_SOURCE_FILE_NAME                  VARCHAR,
-    DP_SOURCE_FILE_ROW_NUMBER            INT,
+    DP_SOURCE_FILE_ROW_NUMBER            NUMBER(38,0),
     DP_LOAD_TIMESTAMP                    TIMESTAMP_NTZ(9)
 );
