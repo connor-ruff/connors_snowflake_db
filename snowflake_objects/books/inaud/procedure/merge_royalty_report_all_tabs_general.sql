@@ -32,7 +32,8 @@ BEGIN
            )                                    WITHIN GROUP (ORDER BY RAW_COLUMN_NUMBER)
     INTO   :v_target_col_list, :v_source_select
     FROM   BOOKS.CONFIG.CROSSWALK
-    WHERE  TARGET_TABLE_NAME = :TARGET_TABLE_NAME;
+    WHERE  TARGET_TABLE_NAME = :TARGET_TABLE_NAME
+      AND  COALESCE(IS_DP_COLUMN, FALSE) = FALSE;
 
     -- Create temporary table that includes DP_SOURCE_FILE_MONTH, parsed from the file name.
     -- File names look like: .../library/Jenifer Ruff (2026-08 Royalty)-library.csv
