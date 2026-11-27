@@ -48,9 +48,9 @@ BEGIN
             WHEN IS_DP_COLUMN THEN '!!!ERROR!!!'
 
             -- Standard type checks 
-            WHEN TARGET_DATA_TYPE = 'DATE' THEN 'TO_DATE(' || RAW_COLUMN_NAME || ', \'YYYY-MM-DD\')'
+            WHEN TARGET_DATA_TYPE = 'DATE' THEN 'TO_DATE(NULLIF(TRIM(' || RAW_COLUMN_NAME || '), \'\'), \'YYYY-MM-DD\')'
 
-            WHEN TARGET_DATA_TYPE ILIKE 'NUMBER%' THEN 'TO_NUMBER(' || RAW_COLUMN_NAME || ',  ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 1) || ', ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 2)    || ')'
+            WHEN TARGET_DATA_TYPE ILIKE 'NUMBER%' THEN 'TO_NUMBER(NULLIF(TRIM(' || RAW_COLUMN_NAME || '), \'\'), ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 1) || ', ' || REGEXP_SUBSTR(TARGET_DATA_TYPE, '\\d+', 1, 2)    || ')'
 
             WHEN TARGET_DATA_TYPE ILIKE 'VARCHAR%' THEN TRIM(RAW_COLUMN_NAME)
 
