@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.IG_WHOLESALE_POD_USD_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/ig/wholesale_pod_usd/csv_stage/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.IG_WHOLESALE_POD_USD_STAGE;
