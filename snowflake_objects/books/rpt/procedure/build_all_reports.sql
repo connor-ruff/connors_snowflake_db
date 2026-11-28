@@ -9,16 +9,19 @@ DECLARE
         FROM   BOOKS.CONFIG.PRE_REPORT_REBUILD_CHECKS
         WHERE  IS_ACTIVE
         ORDER BY CHECK_ID;
-    c_reports       CURSOR FOR
-        SELECT SOURCE_VIEW_NAME, TARGET_TABLE_NAME
+    c_groups        CURSOR FOR
+        SELECT DISTINCT RUN_GROUP
         FROM   BOOKS.CONFIG.REPORTING_TABLES
         WHERE  IS_ACTIVE
-        ORDER BY TARGET_TABLE_NAME;
+        ORDER BY RUN_GROUP;
+    rs_reports      RESULTSET;
+    v_group         INT;
+    v_src           VARCHAR;
+    v_tgt           VARCHAR;
     v_pass          BOOLEAN;
     v_failed_count  INT DEFAULT 0;
     v_failed_list   VARCHAR DEFAULT '';
-    v_inserted      INT DEFAULT 0;
-    v_total         INT DEFAULT 0;
+    v_tables        INT DEFAULT 0;
     v_sql           VARCHAR;
 BEGIN
 
@@ -46,18 +49,29 @@ BEGIN
         CALL BOOKS.CONFIG.RAISE_ERROR('QC FAILED: ' || :v_failed_count::VARCHAR || ' check(s) failed. No reports were rebuilt.' || :v_failed_list);
     END IF;
 
-    -- 2) Rebuild each reporting table from its source view
-    FOR rpt IN c_reports DO
-        v_sql := 'TRUNCATE TABLE BOOKS.' || rpt.TARGET_TABLE_NAME;
-        EXECUTE IMMEDIATE :v_sql;
-
-        v_sql := 'INSERT INTO BOOKS.' || rpt.TARGET_TABLE_NAME || ' SELECT * FROM BOOKS.' || rpt.SOURCE_VIEW_NAME;
-        EXECUTE IMMEDIATE :v_sql;
-
-        v_inserted := SQLROWCOUNT;
-        v_total    := v_total + v_inserted;
+    -- 2) Rebuild reporting tables one run group at a time (ascending).
+    --    Within a group, every table is rebuilt in parallel via async child jobs;
+    --    AWAIT ALL blocks until the group is done (and raises if any child failed),
+    --    so later groups never start on top of a failed or unfinished earlier group.
+    FOR grp IN c_groups DO
+        v_group := grp.RUN_GROUP;
+        -- RESULTSET (not a cursor) so :v_group is bound at assignment time
+        rs_reports := (
+            SELECT SOURCE_VIEW_NAME, TARGET_TABLE_NAME
+            FROM   BOOKS.CONFIG.REPORTING_TABLES
+            WHERE  IS_ACTIVE
+              AND  RUN_GROUP = :v_group
+        );
+        FOR rpt IN rs_reports DO
+            -- record fields can't be bound directly inside ASYNC, so copy to plain variables first
+            v_src := rpt.SOURCE_VIEW_NAME;
+            v_tgt := rpt.TARGET_TABLE_NAME;
+            ASYNC (CALL BOOKS.RPT.REBUILD_REPORT_TABLE(:v_src, :v_tgt));
+            v_tables := v_tables + 1;
+        END FOR;
+        AWAIT ALL;
     END FOR;
 
-    RETURN 'SUCCESS: Inserted ' || :v_total::VARCHAR || ' total row(s) across all reporting tables.';
+    RETURN 'SUCCESS: Rebuilt ' || :v_tables::VARCHAR || ' reporting table(s).';
 END;
 $$;

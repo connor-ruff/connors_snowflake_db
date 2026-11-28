@@ -2,16 +2,17 @@ CREATE TABLE IF NOT EXISTS BOOKS.CONFIG.REPORTING_TABLES (
     SOURCE_VIEW_NAME  VARCHAR,   -- e.g. RPT.DAILY_SALES_RPT_MATERIALIZER (columns must match the target table, in the same order)
     TARGET_TABLE_NAME VARCHAR,   -- e.g. RPT.DAILY_SALES_REPORT
     DESCRIPTION       VARCHAR,
+    RUN_GROUP         INT  NOT NULL, -- groups run in ascending order; tables sharing a group are rebuilt in parallel. Put a table in a later group than anything it depends on.
     IS_ACTIVE         BOOLEAN
 );
 
 TRUNCATE TABLE BOOKS.CONFIG.REPORTING_TABLES;
 
 INSERT INTO BOOKS.CONFIG.REPORTING_TABLES
-(SOURCE_VIEW_NAME, TARGET_TABLE_NAME, DESCRIPTION, IS_ACTIVE)
+(SOURCE_VIEW_NAME, TARGET_TABLE_NAME, DESCRIPTION, RUN_GROUP, IS_ACTIVE)
 VALUES
 (
     'RPT.DAILY_SALES_RPT_MATERIALIZER', 'RPT.DAILY_SALES_REPORT',
     'Daily royalties and units by book version and marketplace (KDP sales + KENP page reads)',
-    TRUE
+    1, TRUE
 );
