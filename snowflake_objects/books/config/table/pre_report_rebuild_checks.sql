@@ -386,5 +386,17 @@ SELECT
 FROM VERSIONS_DISTINCT
 $$,
     TRUE
+),
+
+(
+    16, 'KOBO_CURRENCY_ASSURANCE',
+    'Every row in the Kobo file indicates that the reported currency is USD',
+    'If our assumption that all reported currencies are USD is incorrect, revenue and royalties could be misrepresented.',
+$$
+SELECT COUNT(*) = 0 AS PASS_TEST
+FROM KOBO.BOOK_SALES
+WHERE LP_CURRENCY <> 'USD'
+$$,
+    TRUE
 )
 ;
