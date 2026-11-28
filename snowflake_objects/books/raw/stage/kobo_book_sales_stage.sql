@@ -1,0 +1,6 @@
+CREATE STAGE IF NOT EXISTS BOOKS.RAW.KOBO_BOOK_SALES_STAGE
+URL = 's3://connors-misc-blob-for-blobs/books/kobo/book_sales/csv_stage/'
+STORAGE_INTEGRATION = S3_FULL_INT
+;
+
+LIST @BOOKS.RAW.KOBO_BOOK_SALES_STAGE;

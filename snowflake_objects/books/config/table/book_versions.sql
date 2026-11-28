@@ -252,7 +252,17 @@ VALUES
 (11, 'CD5574645', 'SPOTIFY-DISPLAY-NUM', $$Everett$$, 'Audio', 'EN'),
 (13, 'CD5574652', 'SPOTIFY-DISPLAY-NUM', $$Intern, The$$, 'Audio', 'EN'),
 (12, 'CD5574653', 'SPOTIFY-DISPLAY-NUM', $$Rothaker$$, 'Audio', 'EN'),
-(14, 'CD5574654', 'SPOTIFY-DISPLAY-NUM', $$Only Wrong Once$$, 'Audio', 'EN')
+(14, 'CD5574654', 'SPOTIFY-DISPLAY-NUM', $$Only Wrong Once$$, 'Audio', 'EN'),
+
+(10,'1230010126370', 'ISBN', $$LEUGENS IN DE SNEEUW$$, 'eBook', 'NL'),
+(1,'1230010153918', 'ISBN', $$DE GETALLENMOORDENAAR$$, 'eBook', 'NL'),
+(2,'1230010154373', 'ISBN', $$LIEVE KLEINE MEISJES$$, 'eBook', 'NL'),
+(3,'1230010157435', 'ISBN', $$ALS ZE ONS VINDEN$$, 'eBook', 'NL'),
+(4,'1230010160565', 'ISBN', $$EEN VLEUGJE TWIJFEL$$, 'eBook', 'NL'),
+(5,'1230010197875', 'ISBN', $$DE BRUIDEGOM VERDWEEN$$, 'eBook', 'NL'),
+(6,'1230010207819', 'ISBN', $$VERDWENEN OP VAKANTIE$$, 'eBook', 'NL'),
+(7,'1230010211373', 'ISBN', $$MOORDEN UIT BOETE$$, 'eBook', 'NL'),
+(8,'1230010217085', 'ISBN', $$BEGRAVEN$$, 'eBook', 'NL')
 ;
 
 
