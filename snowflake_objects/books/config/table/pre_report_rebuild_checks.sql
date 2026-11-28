@@ -393,9 +393,23 @@ $$,
     'Every row in the Kobo file indicates that the reported currency is USD',
     'If our assumption that all reported currencies are USD is incorrect, revenue and royalties could be misrepresented.',
 $$
-SELECT COUNT(*) = 0 AS PASS_TEST
-FROM KOBO.BOOK_SALES
-WHERE LP_CURRENCY <> 'USD'
+WITH ALL_CURRS AS (
+    SELECT 
+        LP_CURRENCY AS CURR
+    FROM KOBO.BOOK_SALES
+    UNION 
+    SELECT 
+        PAYABLE_CURRENCY AS CURR
+    FROM KOBO.BOOK_SALES
+    UNION 
+    SELECT 
+        PAYABLE_CURRENCY AS CURR
+    FROM KOBO.MEMBERSHIP_REVENUE
+)
+SELECT 
+    COUNT(*) = 0 AS PASS_TEST
+FROM ALL_CURRS
+WHERE CURR <> 'USD'
 $$,
     TRUE
 )
